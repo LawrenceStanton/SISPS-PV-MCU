@@ -1,0 +1,14 @@
+{
+	"configurations": [
+		{
+			"cwd": "${workspaceFolder}",
+			"executable": "Build/SISPS-PV.elf",
+			"name": "Debug with ST-Link",
+			"request": "launch",
+			"type": "cortex-debug",
+			"runToEntryPoint": "main",
+			"showDevDebugOutput": "none",
+			"servertype": "stlink"
+		}
+	]
+}
