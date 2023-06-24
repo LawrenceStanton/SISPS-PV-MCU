@@ -1,0 +1,15 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "cmake",
+			"label": "CMake: Build",
+			"detail": "CMake Build",
+			"command": "build",
+			"targets": ["all"],
+			"preset": "${command:cmake.activeBuildPresetName}",
+			"group": "build",
+			"problemMatcher": ["$gcc"]
+		}
+	]
+}

@@ -2,13 +2,21 @@
 	"configurations": [
 		{
 			"cwd": "${workspaceFolder}",
-			"executable": "Build/SISPS-PV.elf",
+			"executable": "Build/Release/SISPS-PV.elf",
 			"name": "Debug with ST-Link",
 			"request": "launch",
 			"type": "cortex-debug",
 			"runToEntryPoint": "main",
 			"showDevDebugOutput": "none",
-			"servertype": "stlink"
+			"servertype": "stlink",
+			"preLaunchTask": "CMake: Build",
+			"armToolchainPath": "",
+			"gdbPath": "",
+			"liveWatch": {
+				"enabled": true,
+				"samplesPerSecond": 4
+			},
+			"rtos": "FreeRTOS"
 		}
 	]
 }
