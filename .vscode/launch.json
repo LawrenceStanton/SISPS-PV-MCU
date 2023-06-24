@@ -2,7 +2,7 @@
 	"configurations": [
 		{
 			"cwd": "${workspaceFolder}",
-			"executable": "Build/Release/SISPS-PV.elf",
+			"executable": "./Build/Release/SISPS-PV.elf",
 			"name": "Debug with ST-Link",
 			"request": "launch",
 			"type": "cortex-debug",
@@ -15,8 +15,22 @@
 			"liveWatch": {
 				"enabled": true,
 				"samplesPerSecond": 4
-			},
-			"rtos": "FreeRTOS"
+			}
+		},
+		{
+			"cwd": "${workspaceFolder}",
+			"executable": "./Build/Release/SISPS-PV.elf",
+			"name": "Attach with ST-Link",
+			"request": "attach",
+			"type": "cortex-debug",
+			"showDevDebugOutput": "none",
+			"servertype": "stlink",
+			"armToolchainPath": "",
+			"gdbPath": "",
+			"liveWatch": {
+				"enabled": true,
+				"samplesPerSecond": 4
+			}
 		}
 	]
 }

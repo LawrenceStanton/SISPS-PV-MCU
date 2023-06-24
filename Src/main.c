@@ -397,11 +397,15 @@ static void MX_GPIO_Init(void) {
  * @retval None
  */
 /* USER CODE END Header_StartDefaultTask */
+static uint32_t counter = 0;
+
 void StartDefaultTask(void const *argument) {
 	/* USER CODE BEGIN 5 */
 	/* Infinite loop */
 	for (;;) {
-		osDelay(1);
+		counter++;
+		HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
+		osDelay(1000);
 	}
 	/* USER CODE END 5 */
 }
