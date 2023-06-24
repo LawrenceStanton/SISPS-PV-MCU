@@ -21,16 +21,17 @@ set(APPLICATION_INCLUDE_DIRECTORIES
 	${CMAKE_CURRENT_SOURCE_DIR}/Inc
 )
 
-set(STM32CUBEG0_INCLUDE_DIRECTORIES
-	# HAL Driver Header Files
+set(STM32CUBEG0_HAL_INCLUDE_DIRECTORIES
 	${CMAKE_CURRENT_SOURCE_DIR}/Modules/STM32CubeG0/Drivers/STM32G0xx_HAL_Driver/Inc
 	${CMAKE_CURRENT_SOURCE_DIR}/Modules/STM32CubeG0/Drivers/STM32G0xx_HAL_Driver/Inc/Legacy
 	${CMAKE_CURRENT_SOURCE_DIR}/Modules/STM32CubeG0/Drivers/CMSIS/Device/ST/STM32G0xx/Include
 	${CMAKE_CURRENT_SOURCE_DIR}/Modules/STM32CubeG0/Drivers/CMSIS/Include
-	# FreeRTOS Header Files
+)
+set(STM32CUBEG0_FREERTOS_INCLUDE_DIRECTORIES
 	${CMAKE_CURRENT_SOURCE_DIR}/Modules/STM32CubeG0/Middlewares/Third_Party/FreeRTOS/Source/include
 	${CMAKE_CURRENT_SOURCE_DIR}/Modules/STM32CubeG0/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS
 	${CMAKE_CURRENT_SOURCE_DIR}/Modules/STM32CubeG0/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM0
+	${CMAKE_CURRENT_SOURCE_DIR}/Modules/STM32CubeG0/Drivers/CMSIS/Core/Include
 )
 
 file(GLOB_RECURSE APPLICATION_SOURCES
@@ -38,27 +39,77 @@ file(GLOB_RECURSE APPLICATION_SOURCES
 	${CMAKE_CURRENT_SOURCE_DIR}/Src/*.cpp
 )
 
-file(GLOB STM32CUBEG0_SOURCES
+file(GLOB STM32CUBEG0_HAL_SOURCES
 	${CMAKE_CURRENT_SOURCE_DIR}/Modules/STM32CubeG0/Drivers/STM32G0xx_HAL_Driver/Src/*_hal*.c
+)
 
+# Workaround - Broken template files should not be compiled.
+list(FILTER STM32CUBEG0_HAL_SOURCES EXCLUDE REGEX ".*_template.c")
+
+file(GLOB STM32CUBEG0_FREERTOS_SOURCES
 	${CMAKE_CURRENT_SOURCE_DIR}/Modules/STM32CubeG0/Middlewares/Third_Party/FreeRTOS/Source/*.c
-	
 	${CMAKE_CURRENT_SOURCE_DIR}/Modules/STM32CubeG0/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.c
 	${CMAKE_CURRENT_SOURCE_DIR}/Modules/STM32CubeG0/Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c
 	${CMAKE_CURRENT_SOURCE_DIR}/Modules/STM32CubeG0/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM0/port.c
 )
-
-# Workaround - Broken template files should not be compiled.
-list(FILTER STM32CUBEG0_SOURCES EXCLUDE REGEX ".*_template.c")
 
 set(STARTUP_SCRIPT ${CMAKE_CURRENT_SOURCE_DIR}/CubeMX/startup_stm32g070xx.s)
 set(LINKER_SCRIPT ${CMAKE_CURRENT_SOURCE_DIR}/CubeMX/STM32G070CBTx_FLASH.ld)
 
 add_subdirectory(Modules/etl)
 
+# HAL Library
+add_library(STM32CubeG0_HAL STATIC
+	${STM32CUBEG0_HAL_SOURCES}
+)
+
+target_compile_definitions(STM32CubeG0_HAL PRIVATE
+	USE_HAL_DRIVER
+	STM32G070xx
+)
+
+target_include_directories(STM32CubeG0_HAL SYSTEM PRIVATE
+	${APPLICATION_INCLUDE_DIRECTORIES}
+	${STM32CUBEG0_HAL_INCLUDE_DIRECTORIES}
+)
+
+target_compile_options(STM32CubeG0_HAL PRIVATE
+	${CPU_PARAMETERS}
+	-Wall
+	-Wpedantic
+	-Og
+	-g3
+	-ggdb
+)
+
+# FreeRTOS Library
+add_library(STM32CubeG0_FREERTOS STATIC
+	${STM32CUBEG0_FREERTOS_SOURCES}
+)
+
+target_compile_definitions(STM32CubeG0_FREERTOS PRIVATE
+	USE_HAL_DRIVER
+	STM32G070xx
+)
+
+target_include_directories(STM32CubeG0_FREERTOS SYSTEM PRIVATE
+	${APPLICATION_INCLUDE_DIRECTORIES}
+	${STM32CUBEG0_FREERTOS_INCLUDE_DIRECTORIES}
+)
+
+target_compile_options(STM32CubeG0_FREERTOS PRIVATE
+	${CPU_PARAMETERS}
+	-Wall
+	-Wpedantic
+	-Og
+	-g3
+	-ggdb
+)
+
+# TARGET EXECUTABLE
+
 add_executable(${TARGET_EXECUTABLE} 
-	${APPLICATION_SOURCES} 
-	${STM32CUBEG0_SOURCES}
+	${APPLICATION_SOURCES}
 	${STARTUP_SCRIPT}
 )
 
@@ -71,7 +122,8 @@ target_include_directories(${TARGET_EXECUTABLE} PRIVATE
 	${APPLICATION_INCLUDE_DIRECTORIES}
 )
 target_include_directories(${TARGET_EXECUTABLE} SYSTEM PRIVATE
-	${STM32CUBEG0_INCLUDE_DIRECTORIES}
+	${STM32CUBEG0_HAL_INCLUDE_DIRECTORIES}
+	${STM32CUBEG0_FREERTOS_INCLUDE_DIRECTORIES}
 )
 
 target_compile_options(${TARGET_EXECUTABLE} PRIVATE
@@ -85,10 +137,59 @@ target_compile_options(${TARGET_EXECUTABLE} PRIVATE
 
 target_link_libraries(
 	${TARGET_EXECUTABLE}
+	STM32CubeG0_HAL
+	STM32CubeG0_FREERTOS
 	etl
 )
 
 target_link_options(${TARGET_EXECUTABLE} PRIVATE
+	-T${LINKER_SCRIPT}
+	${CPU_PARAMETERS}
+	-Wl,--start-group
+	-lc
+	-lm
+	-lstdc++
+	-lsupc++
+	-Wl,--end-group
+	-Wl,--print-memory-usage
+)
+
+# TARGET TEST EXECUTABLE
+add_executable(${TARGET_TEST_EXECUTABLE} 
+	${APPLICATION_SOURCES} 
+	${STARTUP_SCRIPT}
+)
+
+target_compile_definitions(${TARGET_TEST_EXECUTABLE} PRIVATE
+	USE_HAL_DRIVER
+	STM32G070xx
+)
+
+target_include_directories(${TARGET_TEST_EXECUTABLE} PRIVATE
+	${APPLICATION_INCLUDE_DIRECTORIES}
+)
+target_include_directories(${TARGET_TEST_EXECUTABLE} SYSTEM PRIVATE
+	${STM32CUBEG0_HAL_INCLUDE_DIRECTORIES}
+	${STM32CUBEG0_FREERTOS_INCLUDE_DIRECTORIES}
+)
+
+target_compile_options(${TARGET_TEST_EXECUTABLE} PRIVATE
+	${CPU_PARAMETERS}
+	-Wall
+	-Wpedantic
+	-Og
+	-g3
+	-ggdb
+)
+
+target_link_libraries(
+	${TARGET_TEST_EXECUTABLE}
+	STM32CubeG0_HAL
+	STM32CubeG0_FREERTOS
+	etl
+)
+
+target_link_options(${TARGET_TEST_EXECUTABLE} PRIVATE
 	-T${LINKER_SCRIPT}
 	${CPU_PARAMETERS}
 	-Wl,--start-group
