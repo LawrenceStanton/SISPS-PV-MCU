@@ -43,6 +43,10 @@ file(GLOB STM32CUBEG0_HAL_SOURCES
 	${CMAKE_CURRENT_SOURCE_DIR}/Modules/STM32CubeG0/Drivers/STM32G0xx_HAL_Driver/Src/*_hal*.c
 )
 
+file(GLOB_RECURSE TEST_SOURCES
+	${CMAKE_CURRENT_SOURCE_DIR}/*.test.cpp
+)
+
 # Workaround - Broken template files should not be compiled.
 list(FILTER STM32CUBEG0_HAL_SOURCES EXCLUDE REGEX ".*_template.c")
 
@@ -57,158 +61,181 @@ set(STARTUP_SCRIPT ${CMAKE_CURRENT_SOURCE_DIR}/CubeMX/startup_stm32g070xx.s)
 set(LINKER_SCRIPT ${CMAKE_CURRENT_SOURCE_DIR}/CubeMX/STM32G070CBTx_FLASH.ld)
 
 add_subdirectory(Modules/etl)
+add_subdirectory(Modules/HDC1080)
 
-# HAL Library
-add_library(STM32CubeG0_HAL STATIC
-	${STM32CUBEG0_HAL_SOURCES}
-)
+if(CMAKE_CROSSCOMPILING)
 
-target_compile_definitions(STM32CubeG0_HAL PRIVATE
-	USE_HAL_DRIVER
-	STM32G070xx
-)
+	# HAL Library
+	add_library(STM32CubeG0_HAL STATIC
+		${STM32CUBEG0_HAL_SOURCES}
+	)
 
-target_include_directories(STM32CubeG0_HAL SYSTEM PRIVATE
-	${APPLICATION_INCLUDE_DIRECTORIES}
-	${STM32CUBEG0_HAL_INCLUDE_DIRECTORIES}
-)
+	target_compile_definitions(STM32CubeG0_HAL PRIVATE
+		USE_HAL_DRIVER
+		STM32G070xx
+	)
 
-target_compile_options(STM32CubeG0_HAL PRIVATE
-	${CPU_PARAMETERS}
-	-Wall
-	-Wpedantic
-	-Og
-	-g3
-	-ggdb
-)
+	target_include_directories(STM32CubeG0_HAL SYSTEM PRIVATE
+		${APPLICATION_INCLUDE_DIRECTORIES}
+		${STM32CUBEG0_HAL_INCLUDE_DIRECTORIES}
+	)
 
-# FreeRTOS Library
-add_library(STM32CubeG0_FREERTOS STATIC
-	${STM32CUBEG0_FREERTOS_SOURCES}
-)
+	target_compile_options(STM32CubeG0_HAL PRIVATE
+		${CPU_PARAMETERS}
+		-Wall
+		-Wpedantic
+		-Og
+		-g3
+		-ggdb
+	)
 
-target_compile_definitions(STM32CubeG0_FREERTOS PRIVATE
-	USE_HAL_DRIVER
-	STM32G070xx
-)
+	# FreeRTOS Library
+	add_library(STM32CubeG0_FREERTOS STATIC
+		${STM32CUBEG0_FREERTOS_SOURCES}
+	)
 
-target_include_directories(STM32CubeG0_FREERTOS SYSTEM PRIVATE
-	${APPLICATION_INCLUDE_DIRECTORIES}
-	${STM32CUBEG0_FREERTOS_INCLUDE_DIRECTORIES}
-)
+	target_compile_definitions(STM32CubeG0_FREERTOS PRIVATE
+		USE_HAL_DRIVER
+		STM32G070xx
+	)
 
-target_compile_options(STM32CubeG0_FREERTOS PRIVATE
-	${CPU_PARAMETERS}
-	-Wall
-	-Wpedantic
-	-Og
-	-g3
-	-ggdb
-)
+	target_include_directories(STM32CubeG0_FREERTOS SYSTEM PRIVATE
+		${APPLICATION_INCLUDE_DIRECTORIES}
+		${STM32CUBEG0_FREERTOS_INCLUDE_DIRECTORIES}
+	)
 
-# TARGET EXECUTABLE
+	target_compile_options(STM32CubeG0_FREERTOS PRIVATE
+		${CPU_PARAMETERS}
+		-Wall
+		-Wpedantic
+		-Og
+		-g3
+		-ggdb
+	)
 
-add_executable(${TARGET_EXECUTABLE} 
-	${APPLICATION_SOURCES}
-	${STARTUP_SCRIPT}
-)
+	# TARGET EXECUTABLE
 
-target_compile_definitions(${TARGET_EXECUTABLE} PRIVATE
-	USE_HAL_DRIVER
-	STM32G070xx
-)
+	add_executable(${TARGET_EXECUTABLE} 
+		${APPLICATION_SOURCES}
+		${STARTUP_SCRIPT}
+	)
 
-target_include_directories(${TARGET_EXECUTABLE} PRIVATE
-	${APPLICATION_INCLUDE_DIRECTORIES}
-)
-target_include_directories(${TARGET_EXECUTABLE} SYSTEM PRIVATE
-	${STM32CUBEG0_HAL_INCLUDE_DIRECTORIES}
-	${STM32CUBEG0_FREERTOS_INCLUDE_DIRECTORIES}
-)
+	target_compile_definitions(${TARGET_EXECUTABLE} PRIVATE
+		USE_HAL_DRIVER
+		STM32G070xx
+	)
 
-target_compile_options(${TARGET_EXECUTABLE} PRIVATE
-	${CPU_PARAMETERS}
-	-Wall
-	-Wpedantic
-	-Og
-	-g3
-	-ggdb
-)
+	target_include_directories(${TARGET_EXECUTABLE} PRIVATE
+		${APPLICATION_INCLUDE_DIRECTORIES}
+	)
+	target_include_directories(${TARGET_EXECUTABLE} SYSTEM PRIVATE
+		${STM32CUBEG0_HAL_INCLUDE_DIRECTORIES}
+		${STM32CUBEG0_FREERTOS_INCLUDE_DIRECTORIES}
+	)
 
-target_link_libraries(
-	${TARGET_EXECUTABLE}
-	STM32CubeG0_HAL
-	STM32CubeG0_FREERTOS
-	etl
-)
+	target_compile_options(${TARGET_EXECUTABLE} PRIVATE
+		${CPU_PARAMETERS}
+		-Wall
+		-Wpedantic
+		-Og
+		-g3
+		-ggdb
+	)
 
-target_link_options(${TARGET_EXECUTABLE} PRIVATE
-	-T${LINKER_SCRIPT}
-	${CPU_PARAMETERS}
-	-Wl,--start-group
-	-lc
-	-lm
-	-lstdc++
-	-lsupc++
-	-Wl,--end-group
-	-Wl,--print-memory-usage
-)
+	target_link_libraries(
+		${TARGET_EXECUTABLE}
+		STM32CubeG0_HAL
+		STM32CubeG0_FREERTOS
+		etl
+	)
 
-# TARGET TEST EXECUTABLE
-add_executable(${TARGET_TEST_EXECUTABLE} 
-	${APPLICATION_SOURCES} 
-	${STARTUP_SCRIPT}
-)
+	target_link_options(${TARGET_EXECUTABLE} PRIVATE
+		-T${LINKER_SCRIPT}
+		${CPU_PARAMETERS}
+		-Wl,--start-group
+		-lc
+		-lm
+		-lstdc++
+		-lsupc++
+		-Wl,--end-group
+		-Wl,--print-memory-usage
+	)
 
-target_compile_definitions(${TARGET_TEST_EXECUTABLE} PRIVATE
-	USE_HAL_DRIVER
-	STM32G070xx
-)
 
-target_include_directories(${TARGET_TEST_EXECUTABLE} PRIVATE
-	${APPLICATION_INCLUDE_DIRECTORIES}
-)
-target_include_directories(${TARGET_TEST_EXECUTABLE} SYSTEM PRIVATE
-	${STM32CUBEG0_HAL_INCLUDE_DIRECTORIES}
-	${STM32CUBEG0_FREERTOS_INCLUDE_DIRECTORIES}
-)
+	add_custom_command(TARGET ${TARGET_EXECUTABLE} POST_BUILD
+		COMMAND ${CMAKE_SIZE} $<TARGET_FILE:${TARGET_EXECUTABLE}>
+	)
 
-target_compile_options(${TARGET_TEST_EXECUTABLE} PRIVATE
-	${CPU_PARAMETERS}
-	-Wall
-	-Wpedantic
-	-Og
-	-g3
-	-ggdb
-)
+	add_custom_command(TARGET ${TARGET_EXECUTABLE} POST_BUILD
+		COMMAND ${CMAKE_OBJCOPY} -O ihex $<TARGET_FILE:${TARGET_EXECUTABLE}> ${TARGET_EXECUTABLE}.hex
+		COMMAND ${CMAKE_OBJCOPY} -O binary $<TARGET_FILE:${TARGET_EXECUTABLE}> ${TARGET_EXECUTABLE}.bin
+	)
 
-target_link_libraries(
-	${TARGET_TEST_EXECUTABLE}
-	STM32CubeG0_HAL
-	STM32CubeG0_FREERTOS
-	etl
-)
+	add_custom_command(TARGET ${TARGET_EXECUTABLE} POST_BUILD
+		COMMAND ${CMAKE_OBJDUMP} -D -C $<TARGET_FILE:${TARGET_EXECUTABLE}> > ${TARGET_EXECUTABLE}.s
+	)
 
-target_link_options(${TARGET_TEST_EXECUTABLE} PRIVATE
-	-T${LINKER_SCRIPT}
-	${CPU_PARAMETERS}
-	-Wl,--start-group
-	-lc
-	-lm
-	-lstdc++
-	-lsupc++
-	-Wl,--end-group
-	-Wl,--print-memory-usage
-)
 
-add_custom_command(TARGET ${TARGET_EXECUTABLE} POST_BUILD
-	COMMAND ${CMAKE_SIZE} $<TARGET_FILE:${TARGET_EXECUTABLE}>
-)
+endif()
 
-add_custom_command(TARGET ${TARGET_EXECUTABLE} POST_BUILD
-	COMMAND ${CMAKE_OBJCOPY} -O ihex $<TARGET_FILE:${TARGET_EXECUTABLE}> ${TARGET_EXECUTABLE}.hex
-	COMMAND ${CMAKE_OBJCOPY} -O binary $<TARGET_FILE:${TARGET_EXECUTABLE}> ${TARGET_EXECUTABLE}.bin
-)
+# LOCAL TEST EXECUTABLE
+if(NOT CMAKE_CROSSCOMPILING)
 
-add_custom_command(TARGET ${TARGET_EXECUTABLE} POST_BUILD
-	COMMAND ${CMAKE_OBJDUMP} -D -C $<TARGET_FILE:${TARGET_EXECUTABLE}> > ${TARGET_EXECUTABLE}.s)
+	# Google Test
+	include(FetchContent)
+	FetchContent_Declare(
+		googletest
+		GIT_REPOSITORY https://github.com/google/googletest
+		GIT_TAG origin/main
+	)
+	set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+	FetchContent_MakeAvailable(googletest)
+
+	enable_testing()
+
+	add_executable(${LOCAL_TEST_EXECUTABLE} 
+		${TEST_SOURCES}
+	)
+
+	target_compile_definitions(${LOCAL_TEST_EXECUTABLE} PRIVATE
+		# USE_HAL_DRIVER
+		# STM32G070xx
+	)
+
+	target_include_directories(${LOCAL_TEST_EXECUTABLE} PRIVATE
+		${APPLICATION_INCLUDE_DIRECTORIES}
+	)
+	target_include_directories(${LOCAL_TEST_EXECUTABLE} SYSTEM PRIVATE
+		${STM32CUBEG0_HAL_INCLUDE_DIRECTORIES}
+		${STM32CUBEG0_FREERTOS_INCLUDE_DIRECTORIES}
+	)
+
+	target_compile_options(${LOCAL_TEST_EXECUTABLE} PRIVATE
+		
+	)
+
+	target_link_libraries(
+		${LOCAL_TEST_EXECUTABLE}
+		GTest::gtest_main
+		etl
+	)
+
+	target_link_options(${LOCAL_TEST_EXECUTABLE} PRIVATE
+		
+	)
+
+	include(GoogleTest)
+	gtest_discover_tests(${LOCAL_TEST_EXECUTABLE})
+
+	add_custom_command(
+		TARGET ${LOCAL_TEST_EXECUTABLE} 
+		COMMENT "Run Tests"
+		POST_BUILD
+		COMMAND "ctest"
+	)
+
+	# add_custom_command(TARGET ${LOCAL_TEST_EXECUTABLE} POST_BUILD
+	# 	COMMAND ${CMAKE_SIZE} $<TARGET_FILE:${LOCAL_TEST_EXECUTABLE}>
+	# )
+
+endif()
