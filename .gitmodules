@@ -7,3 +7,6 @@ url = https://github.com/ETLCPP/etl
 [submodule "Modules/SISPS-Commons"]
 path = Modules/SISPS-Commons
 url = https://github.com/LawrenceStanton/SISPS-Commons
+[submodule "Modules/HDC1080"]
+	path = Modules/HDC1080
+	url = https://github.com/LawrenceStanton/HDC1080
