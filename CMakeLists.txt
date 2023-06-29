@@ -60,8 +60,21 @@ file(GLOB STM32CUBEG0_FREERTOS_SOURCES
 set(STARTUP_SCRIPT ${CMAKE_CURRENT_SOURCE_DIR}/CubeMX/startup_stm32g070xx.s)
 set(LINKER_SCRIPT ${CMAKE_CURRENT_SOURCE_DIR}/CubeMX/STM32G070CBTx_FLASH.ld)
 
-add_subdirectory(Modules/etl)
-add_subdirectory(Modules/HDC1080)
+if(NOT CMAKE_CROSSCOMPILING)
+	# Google Test
+	include(FetchContent)
+	FetchContent_Declare(
+		googletest
+		GIT_REPOSITORY https://github.com/google/googletest
+		GIT_TAG origin/main
+	)
+	set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+	FetchContent_MakeAvailable(googletest)
+
+	enable_testing()
+endif()
+
+add_subdirectory(Modules)
 
 if(CMAKE_CROSSCOMPILING)
 
@@ -143,7 +156,7 @@ if(CMAKE_CROSSCOMPILING)
 	)
 
 	target_link_libraries(
-		${TARGET_EXECUTABLE}
+		${TARGET_EXECUTABLE} PRIVATE
 		STM32CubeG0_HAL
 		STM32CubeG0_FREERTOS
 		etl
@@ -175,67 +188,5 @@ if(CMAKE_CROSSCOMPILING)
 		COMMAND ${CMAKE_OBJDUMP} -D -C $<TARGET_FILE:${TARGET_EXECUTABLE}> > ${TARGET_EXECUTABLE}.s
 	)
 
-
-endif()
-
-# LOCAL TEST EXECUTABLE
-if(NOT CMAKE_CROSSCOMPILING)
-
-	# Google Test
-	include(FetchContent)
-	FetchContent_Declare(
-		googletest
-		GIT_REPOSITORY https://github.com/google/googletest
-		GIT_TAG origin/main
-	)
-	set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-	FetchContent_MakeAvailable(googletest)
-
-	enable_testing()
-
-	add_executable(${LOCAL_TEST_EXECUTABLE} 
-		${TEST_SOURCES}
-	)
-
-	target_compile_definitions(${LOCAL_TEST_EXECUTABLE} PRIVATE
-		# USE_HAL_DRIVER
-		# STM32G070xx
-	)
-
-	target_include_directories(${LOCAL_TEST_EXECUTABLE} PRIVATE
-		${APPLICATION_INCLUDE_DIRECTORIES}
-	)
-	target_include_directories(${LOCAL_TEST_EXECUTABLE} SYSTEM PRIVATE
-		${STM32CUBEG0_HAL_INCLUDE_DIRECTORIES}
-		${STM32CUBEG0_FREERTOS_INCLUDE_DIRECTORIES}
-	)
-
-	target_compile_options(${LOCAL_TEST_EXECUTABLE} PRIVATE
-		
-	)
-
-	target_link_libraries(
-		${LOCAL_TEST_EXECUTABLE}
-		GTest::gtest_main
-		etl
-	)
-
-	target_link_options(${LOCAL_TEST_EXECUTABLE} PRIVATE
-		
-	)
-
-	include(GoogleTest)
-	gtest_discover_tests(${LOCAL_TEST_EXECUTABLE})
-
-	add_custom_command(
-		TARGET ${LOCAL_TEST_EXECUTABLE} 
-		COMMENT "Run Tests"
-		POST_BUILD
-		COMMAND "ctest"
-	)
-
-	# add_custom_command(TARGET ${LOCAL_TEST_EXECUTABLE} POST_BUILD
-	# 	COMMAND ${CMAKE_SIZE} $<TARGET_FILE:${LOCAL_TEST_EXECUTABLE}>
-	# )
 
 endif()
