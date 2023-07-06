@@ -2,14 +2,13 @@
 	"configurations": [
 		{
 			"cwd": "${workspaceFolder}",
-			"executable": "./Build/Release/SISPS-PV.elf",
+			"executable": "${command:cmake.launchTargetPath}",
 			"name": "Debug with ST-Link",
 			"request": "launch",
 			"type": "cortex-debug",
 			"runToEntryPoint": "main",
 			"showDevDebugOutput": "none",
 			"servertype": "stlink",
-			"preLaunchTask": "CMake: Build",
 			"armToolchainPath": "",
 			"gdbPath": "",
 			"liveWatch": {
@@ -19,7 +18,7 @@
 		},
 		{
 			"cwd": "${workspaceFolder}",
-			"executable": "./Build/Release/SISPS-PV.elf",
+			"executable": "${command:cmake.launchTargetPath}",
 			"name": "Attach with ST-Link",
 			"request": "attach",
 			"type": "cortex-debug",
