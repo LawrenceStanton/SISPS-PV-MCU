@@ -98,8 +98,8 @@ extern "C" {
  *        (when HSE is used as system clock source, directly or through the PLL).
  */
 #if !defined(HSE_VALUE)
-	#define HSE_VALUE (8'000'000UL) /*!< Value of the External oscillator in Hz */
-#endif								/* HSE_VALUE */
+	#define HSE_VALUE (8000000UL) /*!< Value of the External oscillator in Hz */
+#endif							  /* HSE_VALUE */
 
 #if !defined(HSE_STARTUP_TIMEOUT)
 	#define HSE_STARTUP_TIMEOUT (100UL) /*!< Time out for HSE start up, in ms */
@@ -111,8 +111,8 @@ extern "C" {
  *        (when HSI is used as system clock source, directly or through the PLL).
  */
 #if !defined(HSI_VALUE)
-	#define HSI_VALUE (16'000'000UL) /*!< Value of the Internal oscillator in Hz*/
-#endif								 /* HSI_VALUE */
+	#define HSI_VALUE (16000000UL) /*!< Value of the Internal oscillator in Hz*/
+#endif							   /* HSI_VALUE */
 
 #if defined(STM32G0C1xx) || defined(STM32G0B1xx) || defined(STM32G0B0xx)
 	/**
@@ -133,17 +133,17 @@ extern "C" {
  * @brief Internal Low Speed oscillator (LSI) value.
  */
 #if !defined(LSI_VALUE)
-	#define LSI_VALUE (32'000UL) /*!< LSI Typical Value in Hz*/
-#endif /* LSI_VALUE */			 /*!< Value of the Internal Low Speed oscillator in Hz                                 \
-The real value may vary depending on the variations                                                          \
+	#define LSI_VALUE (32000UL) /*!< LSI Typical Value in Hz*/
+#endif /* LSI_VALUE */			/*!< Value of the Internal Low Speed oscillator in Hz                                  \
+The real value may vary depending on the variations                                                           \
 in voltage and temperature.*/
 /**
  * @brief External Low Speed oscillator (LSE) value.
  *        This value is used by the UART, RTC HAL module to compute the system frequency
  */
 #if !defined(LSE_VALUE)
-	#define LSE_VALUE (32'768UL) /*!< Value of the External oscillator in Hz*/
-#endif							 /* LSE_VALUE */
+	#define LSE_VALUE (32768UL) /*!< Value of the External oscillator in Hz*/
+#endif							/* LSE_VALUE */
 
 #if !defined(LSE_STARTUP_TIMEOUT)
 	#define LSE_STARTUP_TIMEOUT (5000UL) /*!< Time out for LSE start up, in ms */
@@ -155,8 +155,8 @@ in voltage and temperature.*/
  *        frequency.
  */
 #if !defined(EXTERNAL_I2S1_CLOCK_VALUE)
-	#define EXTERNAL_I2S1_CLOCK_VALUE (48'000UL) /*!< Value of the I2S1 External clock source in Hz*/
-#endif											 /* EXTERNAL_I2S1_CLOCK_VALUE */
+	#define EXTERNAL_I2S1_CLOCK_VALUE (48000UL) /*!< Value of the I2S1 External clock source in Hz*/
+#endif											/* EXTERNAL_I2S1_CLOCK_VALUE */
 
 #if defined(STM32G0C1xx) || defined(STM32G0B1xx) || defined(STM32G0B0xx)
 	/**

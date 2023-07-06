@@ -157,9 +157,7 @@ void SystemClock_Config(void) {
 	RCC_OscInitStruct.HSIDiv			  = RCC_HSI_DIV1;
 	RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
 	RCC_OscInitStruct.PLL.PLLState		  = RCC_PLL_NONE;
-	if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK) {
-		Error_Handler();
-	}
+	if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK) { Error_Handler(); }
 
 	/** Initializes the CPU, AHB and APB buses clocks
 	 */
@@ -168,9 +166,7 @@ void SystemClock_Config(void) {
 	RCC_ClkInitStruct.AHBCLKDivider	 = RCC_SYSCLK_DIV1;
 	RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
 
-	if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0) != HAL_OK) {
-		Error_Handler();
-	}
+	if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0) != HAL_OK) { Error_Handler(); }
 }
 
 /**
@@ -196,21 +192,15 @@ static void MX_I2C1_Init(void) {
 	hi2c1.Init.OwnAddress2Masks = I2C_OA2_NOMASK;
 	hi2c1.Init.GeneralCallMode	= I2C_GENERALCALL_DISABLE;
 	hi2c1.Init.NoStretchMode	= I2C_NOSTRETCH_DISABLE;
-	if (HAL_I2C_Init(&hi2c1) != HAL_OK) {
-		Error_Handler();
-	}
+	if (HAL_I2C_Init(&hi2c1) != HAL_OK) { Error_Handler(); }
 
 	/** Configure Analogue filter
 	 */
-	if (HAL_I2CEx_ConfigAnalogFilter(&hi2c1, I2C_ANALOGFILTER_ENABLE) != HAL_OK) {
-		Error_Handler();
-	}
+	if (HAL_I2CEx_ConfigAnalogFilter(&hi2c1, I2C_ANALOGFILTER_ENABLE) != HAL_OK) { Error_Handler(); }
 
 	/** Configure Digital filter
 	 */
-	if (HAL_I2CEx_ConfigDigitalFilter(&hi2c1, 0) != HAL_OK) {
-		Error_Handler();
-	}
+	if (HAL_I2CEx_ConfigDigitalFilter(&hi2c1, 0) != HAL_OK) { Error_Handler(); }
 	/* USER CODE BEGIN I2C1_Init 2 */
 
 	/* USER CODE END I2C1_Init 2 */
@@ -239,21 +229,15 @@ static void MX_I2C2_Init(void) {
 	hi2c2.Init.OwnAddress2Masks = I2C_OA2_NOMASK;
 	hi2c2.Init.GeneralCallMode	= I2C_GENERALCALL_DISABLE;
 	hi2c2.Init.NoStretchMode	= I2C_NOSTRETCH_DISABLE;
-	if (HAL_I2C_Init(&hi2c2) != HAL_OK) {
-		Error_Handler();
-	}
+	if (HAL_I2C_Init(&hi2c2) != HAL_OK) { Error_Handler(); }
 
 	/** Configure Analogue filter
 	 */
-	if (HAL_I2CEx_ConfigAnalogFilter(&hi2c2, I2C_ANALOGFILTER_ENABLE) != HAL_OK) {
-		Error_Handler();
-	}
+	if (HAL_I2CEx_ConfigAnalogFilter(&hi2c2, I2C_ANALOGFILTER_ENABLE) != HAL_OK) { Error_Handler(); }
 
 	/** Configure Digital filter
 	 */
-	if (HAL_I2CEx_ConfigDigitalFilter(&hi2c2, 0) != HAL_OK) {
-		Error_Handler();
-	}
+	if (HAL_I2CEx_ConfigDigitalFilter(&hi2c2, 0) != HAL_OK) { Error_Handler(); }
 	/* USER CODE BEGIN I2C2_Init 2 */
 
 	/* USER CODE END I2C2_Init 2 */
@@ -284,18 +268,10 @@ static void MX_USART1_UART_Init(void) {
 	huart1.Init.OneBitSampling		   = UART_ONE_BIT_SAMPLE_DISABLE;
 	huart1.Init.ClockPrescaler		   = UART_PRESCALER_DIV1;
 	huart1.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
-	if (HAL_UART_Init(&huart1) != HAL_OK) {
-		Error_Handler();
-	}
-	if (HAL_UARTEx_SetTxFifoThreshold(&huart1, UART_TXFIFO_THRESHOLD_1_8) != HAL_OK) {
-		Error_Handler();
-	}
-	if (HAL_UARTEx_SetRxFifoThreshold(&huart1, UART_RXFIFO_THRESHOLD_1_8) != HAL_OK) {
-		Error_Handler();
-	}
-	if (HAL_UARTEx_DisableFifoMode(&huart1) != HAL_OK) {
-		Error_Handler();
-	}
+	if (HAL_UART_Init(&huart1) != HAL_OK) { Error_Handler(); }
+	if (HAL_UARTEx_SetTxFifoThreshold(&huart1, UART_TXFIFO_THRESHOLD_1_8) != HAL_OK) { Error_Handler(); }
+	if (HAL_UARTEx_SetRxFifoThreshold(&huart1, UART_RXFIFO_THRESHOLD_1_8) != HAL_OK) { Error_Handler(); }
+	if (HAL_UARTEx_DisableFifoMode(&huart1) != HAL_OK) { Error_Handler(); }
 	/* USER CODE BEGIN USART1_Init 2 */
 
 	/* USER CODE END USART1_Init 2 */
@@ -327,9 +303,7 @@ static void MX_USART3_UART_Init(void) {
 	huart3.Init.ClockPrescaler		   = UART_PRESCALER_DIV1;
 	huart3.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_SWAP_INIT;
 	huart3.AdvancedInit.Swap		   = UART_ADVFEATURE_SWAP_ENABLE;
-	if (HAL_UART_Init(&huart3) != HAL_OK) {
-		Error_Handler();
-	}
+	if (HAL_UART_Init(&huart3) != HAL_OK) { Error_Handler(); }
 	/* USER CODE BEGIN USART3_Init 2 */
 
 	/* USER CODE END USART3_Init 2 */
@@ -412,9 +386,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 	/* USER CODE BEGIN Callback 0 */
 
 	/* USER CODE END Callback 0 */
-	if (htim->Instance == TIM16) {
-		HAL_IncTick();
-	}
+	if (htim->Instance == TIM16) { HAL_IncTick(); }
 	/* USER CODE BEGIN Callback 1 */
 
 	/* USER CODE END Callback 1 */

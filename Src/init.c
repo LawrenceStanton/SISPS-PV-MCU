@@ -53,7 +53,7 @@ void SystemClock_Config(void) {
 
 void MX_I2C1_Init(void) {
 	hi2c1.Instance				= I2C1;
-	hi2c1.Init.Timing			= 0x00'30'3D'5B;
+	hi2c1.Init.Timing			= 0x00303D5B;
 	hi2c1.Init.OwnAddress1		= 0;
 	hi2c1.Init.AddressingMode	= I2C_ADDRESSINGMODE_7BIT;
 	hi2c1.Init.DualAddressMode	= I2C_DUALADDRESS_DISABLE;
@@ -72,7 +72,7 @@ void MX_I2C1_Init(void) {
 
 void MX_I2C2_Init(void) {
 	hi2c2.Instance				= I2C2;
-	hi2c2.Init.Timing			= 0x00'30'3D'5B;
+	hi2c2.Init.Timing			= 0x00303D5B;
 	hi2c2.Init.OwnAddress1		= 0;
 	hi2c2.Init.AddressingMode	= I2C_ADDRESSINGMODE_7BIT;
 	hi2c2.Init.DualAddressMode	= I2C_DUALADDRESS_DISABLE;
@@ -91,7 +91,7 @@ void MX_I2C2_Init(void) {
 
 void MX_USART1_UART_Init(void) {
 	huart1.Instance					   = USART1;
-	huart1.Init.BaudRate			   = 115'200;
+	huart1.Init.BaudRate			   = 115200;
 	huart1.Init.WordLength			   = UART_WORDLENGTH_8B;
 	huart1.Init.StopBits			   = UART_STOPBITS_1;
 	huart1.Init.Parity				   = UART_PARITY_NONE;
@@ -109,7 +109,7 @@ void MX_USART1_UART_Init(void) {
 
 void MX_USART3_UART_Init(void) {
 	huart3.Instance					   = USART3;
-	huart3.Init.BaudRate			   = 115'200;
+	huart3.Init.BaudRate			   = 115200;
 	huart3.Init.WordLength			   = UART_WORDLENGTH_8B;
 	huart3.Init.StopBits			   = UART_STOPBITS_1;
 	huart3.Init.Parity				   = UART_PARITY_NONE;

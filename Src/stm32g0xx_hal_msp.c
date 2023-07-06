@@ -99,9 +99,7 @@ void HAL_I2C_MspInit(I2C_HandleTypeDef *hi2c) {
 		 */
 		PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_I2C1;
 		PeriphClkInit.I2c1ClockSelection   = RCC_I2C1CLKSOURCE_PCLK1;
-		if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK) {
-			Error_Handler();
-		}
+		if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK) { Error_Handler(); }
 
 		__HAL_RCC_GPIOB_CLK_ENABLE();
 		/**I2C1 GPIO Configuration
@@ -219,9 +217,7 @@ void HAL_UART_MspInit(UART_HandleTypeDef *huart) {
 		 */
 		PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USART1;
 		PeriphClkInit.Usart1ClockSelection = RCC_USART1CLKSOURCE_PCLK1;
-		if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK) {
-			Error_Handler();
-		}
+		if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK) { Error_Handler(); }
 
 		/* Peripheral clock enable */
 		__HAL_RCC_USART1_CLK_ENABLE();
