@@ -3,7 +3,6 @@ cmake_minimum_required(VERSION 3.24)
 project(SISPS-PV)
 
 set(TARGET_EXECUTABLE ${CMAKE_PROJECT_NAME})
-set(TARGET_TEST_EXECUTABLE ${CMAKE_PROJECT_NAME}-Test)
 set(LOCAL_TEST_EXECUTABLE ${CMAKE_PROJECT_NAME}-LocalTest)
 
 enable_language(C CXX ASM)
@@ -17,8 +16,30 @@ set(CMAKE_CXX_EXTENSIONS ON)
 
 include(CMake/mcu.cmake)
 
+if(CMAKE_CROSSCOMPILING)
+	# Cross Compilation Required Options
+	set(CROSSCOMPILE_CFLAGS
+		-fdata-sections
+		-ffunction-sections
+		--specs=nano.specs
+		-Wl,--gc-section	
+	)
+	set(CROSSCOMPILE_CXXFLAGS
+		-fno-rtti
+		-fno-exceptions
+		-fno-threadsafe-statics
+	)
+
+	add_compile_options(
+		${CPU_PARAMETERS}
+		${CROSSCOMPILE_CFLAGS}
+		"$<$<COMPILE_LANGUAGE:CXX>:${CROSSCOMPILE_CXXFLAGS}>"
+	)
+endif()
+
 set(APPLICATION_INCLUDE_DIRECTORIES
 	${CMAKE_CURRENT_SOURCE_DIR}/Inc
+	${CMAKE_CURRENT_SOURCE_DIR}/Lib/Inc
 )
 
 set(STM32CUBEG0_HAL_INCLUDE_DIRECTORIES
@@ -26,6 +47,7 @@ set(STM32CUBEG0_HAL_INCLUDE_DIRECTORIES
 	${CMAKE_CURRENT_SOURCE_DIR}/Modules/STM32CubeG0/Drivers/STM32G0xx_HAL_Driver/Inc/Legacy
 	${CMAKE_CURRENT_SOURCE_DIR}/Modules/STM32CubeG0/Drivers/CMSIS/Device/ST/STM32G0xx/Include
 	${CMAKE_CURRENT_SOURCE_DIR}/Modules/STM32CubeG0/Drivers/CMSIS/Include
+	${CMAKE_CURRENT_SOURCE_DIR}/Inc/HAL
 )
 set(STM32CUBEG0_FREERTOS_INCLUDE_DIRECTORIES
 	${CMAKE_CURRENT_SOURCE_DIR}/Modules/STM32CubeG0/Middlewares/Third_Party/FreeRTOS/Source/include
@@ -37,7 +59,10 @@ set(STM32CUBEG0_FREERTOS_INCLUDE_DIRECTORIES
 file(GLOB_RECURSE APPLICATION_SOURCES
 	${CMAKE_CURRENT_SOURCE_DIR}/Src/*.c
 	${CMAKE_CURRENT_SOURCE_DIR}/Src/*.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/Src/app_freertos.c
 )
+
+list(FILTER APPLICATION_SOURCES EXCLUDE REGEX "main.c$")	# main.cpp is used instead of main.c
 
 file(GLOB STM32CUBEG0_HAL_SOURCES
 	${CMAKE_CURRENT_SOURCE_DIR}/Modules/STM32CubeG0/Drivers/STM32G0xx_HAL_Driver/Src/*_hal*.c
@@ -57,8 +82,7 @@ file(GLOB STM32CUBEG0_FREERTOS_SOURCES
 	${CMAKE_CURRENT_SOURCE_DIR}/Modules/STM32CubeG0/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM0/port.c
 )
 
-set(STARTUP_SCRIPT ${CMAKE_CURRENT_SOURCE_DIR}/CubeMX/startup_stm32g070xx.s)
-set(LINKER_SCRIPT ${CMAKE_CURRENT_SOURCE_DIR}/CubeMX/STM32G070CBTx_FLASH.ld)
+include(CMake/scripts.cmake)
 
 if(NOT CMAKE_CROSSCOMPILING)
 	# Google Test
@@ -78,53 +102,59 @@ add_subdirectory(Modules)
 
 if(CMAKE_CROSSCOMPILING)
 
+	include(CMake/STM32CubeG0.cmake)
+
 	# HAL Library
 	add_library(STM32CubeG0_HAL STATIC
 		${STM32CUBEG0_HAL_SOURCES}
 	)
 
-	target_compile_definitions(STM32CubeG0_HAL PRIVATE
-		USE_HAL_DRIVER
-		STM32G070xx
+	target_compile_definitions(STM32CubeG0_HAL PUBLIC
+		${HAL_COMPILE_DEFINITIONS}
 	)
 
-	target_include_directories(STM32CubeG0_HAL SYSTEM PRIVATE
-		${APPLICATION_INCLUDE_DIRECTORIES}
-		${STM32CUBEG0_HAL_INCLUDE_DIRECTORIES}
+	target_include_directories(STM32CubeG0_HAL SYSTEM
+		PUBLIC ${STM32CUBEG0_HAL_INCLUDE_DIRECTORIES}
 	)
 
 	target_compile_options(STM32CubeG0_HAL PRIVATE
-		${CPU_PARAMETERS}
-		-Wall
-		-Wpedantic
-		-Og
-		-g3
-		-ggdb
+		# ${CPU_PARAMETERS}
+		# -Wall
+		# -Wpedantic
+		# -Og
+		# -g3
+		# -ggdb
 	)
+
+	add_library(SISPS::HAL ALIAS STM32CubeG0_HAL)
 
 	# FreeRTOS Library
 	add_library(STM32CubeG0_FREERTOS STATIC
 		${STM32CUBEG0_FREERTOS_SOURCES}
 	)
 
-	target_compile_definitions(STM32CubeG0_FREERTOS PRIVATE
-		USE_HAL_DRIVER
-		STM32G070xx
+	target_compile_definitions(STM32CubeG0_FREERTOS PUBLIC
+		${HAL_COMPILE_DEFINITIONS}
 	)
 
-	target_include_directories(STM32CubeG0_FREERTOS SYSTEM PRIVATE
-		${APPLICATION_INCLUDE_DIRECTORIES}
-		${STM32CUBEG0_FREERTOS_INCLUDE_DIRECTORIES}
+	target_include_directories(STM32CubeG0_FREERTOS SYSTEM
+		PUBLIC ${STM32CUBEG0_FREERTOS_INCLUDE_DIRECTORIES}
+		PRIVATE ${APPLICATION_INCLUDE_DIRECTORIES}
 	)
 
 	target_compile_options(STM32CubeG0_FREERTOS PRIVATE
-		${CPU_PARAMETERS}
-		-Wall
-		-Wpedantic
-		-Og
-		-g3
-		-ggdb
+		# ${CPU_PARAMETERS}
+		# -Wall
+		# -Wpedantic
+		# -Og
+		# -g3
+		# -ggdb
 	)
+
+	add_library(SISPS::FreeRTOS ALIAS STM32CubeG0_FREERTOS)
+
+	# Local Library
+	add_subdirectory(Lib)
 
 	# TARGET EXECUTABLE
 
@@ -134,37 +164,38 @@ if(CMAKE_CROSSCOMPILING)
 	)
 
 	target_compile_definitions(${TARGET_EXECUTABLE} PRIVATE
-		USE_HAL_DRIVER
-		STM32G070xx
+		${HAL_COMPILE_DEFINITIONS}
 	)
 
 	target_include_directories(${TARGET_EXECUTABLE} PRIVATE
 		${APPLICATION_INCLUDE_DIRECTORIES}
 	)
 	target_include_directories(${TARGET_EXECUTABLE} SYSTEM PRIVATE
-		${STM32CUBEG0_HAL_INCLUDE_DIRECTORIES}
-		${STM32CUBEG0_FREERTOS_INCLUDE_DIRECTORIES}
+		# ${STM32CUBEG0_HAL_INCLUDE_DIRECTORIES}
+		# ${STM32CUBEG0_FREERTOS_INCLUDE_DIRECTORIES}
 	)
 
 	target_compile_options(${TARGET_EXECUTABLE} PRIVATE
-		${CPU_PARAMETERS}
-		-Wall
-		-Wpedantic
-		-Og
-		-g3
-		-ggdb
+		# ${CPU_PARAMETERS}
+		# -Wall
+		# -Wpedantic
+		# -O0
+		# -g3
+		# -ggdb
 	)
 
 	target_link_libraries(
 		${TARGET_EXECUTABLE} PRIVATE
 		STM32CubeG0_HAL
 		STM32CubeG0_FREERTOS
+		SISPS::Lib
 		etl
 	)
 
 	target_link_options(${TARGET_EXECUTABLE} PRIVATE
 		-T${LINKER_SCRIPT}
 		${CPU_PARAMETERS}
+		-Wl,-Map=${TARGET_EXECUTABLE}.map
 		-Wl,--start-group
 		-lc
 		-lm
@@ -180,13 +211,16 @@ if(CMAKE_CROSSCOMPILING)
 	)
 
 	add_custom_command(TARGET ${TARGET_EXECUTABLE} POST_BUILD
+		COMMENT "Generating ${TARGET_EXECUTABLE}.hex and ${TARGET_EXECUTABLE}.bin"
 		COMMAND ${CMAKE_OBJCOPY} -O ihex $<TARGET_FILE:${TARGET_EXECUTABLE}> ${TARGET_EXECUTABLE}.hex
 		COMMAND ${CMAKE_OBJCOPY} -O binary $<TARGET_FILE:${TARGET_EXECUTABLE}> ${TARGET_EXECUTABLE}.bin
 	)
 
 	add_custom_command(TARGET ${TARGET_EXECUTABLE} POST_BUILD
+		COMMENT "Generating ${TARGET_EXECUTABLE} Disassembly"
 		COMMAND ${CMAKE_OBJDUMP} -D -C $<TARGET_FILE:${TARGET_EXECUTABLE}> > ${TARGET_EXECUTABLE}.s
 	)
 
+	add_subdirectory(Test)
 
 endif()
