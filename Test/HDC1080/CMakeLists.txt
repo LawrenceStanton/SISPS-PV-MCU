@@ -1,0 +1,55 @@
+project(HDC1080_TEST)
+
+set(TEST_EXECUTABLE ${PROJECT_NAME})
+
+include(${CMAKE_SOURCE_DIR}/CMake/mcu.cmake)
+include(${CMAKE_SOURCE_DIR}/CMake/scripts.cmake)
+include(${CMAKE_SOURCE_DIR}/CMake/stm32CubeG0.cmake)
+
+file(GLOB APPLICATION_SOURCES
+	${CMAKE_CURRENT_SOURCE_DIR}/Src/*.c
+	${CMAKE_CURRENT_SOURCE_DIR}/Src/*.cpp
+)
+
+add_executable(${TEST_EXECUTABLE}
+	${APPLICATION_SOURCES}
+	${STARTUP_SCRIPT}
+)
+
+target_include_directories(${TEST_EXECUTABLE} PRIVATE
+	${CMAKE_CURRENT_SOURCE_DIR}/Inc
+)
+
+target_link_libraries(${TEST_EXECUTABLE} PRIVATE
+	SISPS::HAL
+	SISPS::HDC1080
+)
+
+target_link_options(${TEST_EXECUTABLE} PRIVATE
+	-T${LINKER_SCRIPT}
+	${CPU_PARAMETERS}
+	# --specs=nano.specs
+	-Wl,--start-group
+	-lc
+	-lm
+	-lstdc++ 
+	-lsupc++
+	-Wl,--end-group
+	-Wl,--print-memory-usage
+)
+
+
+add_custom_command(TARGET ${TEST_EXECUTABLE} POST_BUILD
+	COMMAND ${CMAKE_SIZE} $<TARGET_FILE:${TARGET_EXECUTABLE}>
+)
+
+add_custom_command(TARGET ${TEST_EXECUTABLE} POST_BUILD
+	COMMENT "Generating ${TEST_EXECUTABLE}.hex and ${TEST_EXECUTABLE}.bin"
+	COMMAND ${CMAKE_OBJCOPY} -O ihex $<TARGET_FILE:${TEST_EXECUTABLE}> ${TEST_EXECUTABLE}.hex
+	COMMAND ${CMAKE_OBJCOPY} -O binary $<TARGET_FILE:${TEST_EXECUTABLE}> ${TEST_EXECUTABLE}.bin
+)
+
+add_custom_command(TARGET ${TEST_EXECUTABLE} POST_BUILD
+	COMMENT "Generating ${TEST_EXECUTABLE} Disassembly"
+	COMMAND ${CMAKE_OBJDUMP} -D -C $<TARGET_FILE:${TARGET_EXECUTABLE}> > ${TARGET_EXECUTABLE}.s
+)
