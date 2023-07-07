@@ -18,8 +18,6 @@
 
 #pragma once
 
-#include <cstdint>
-
 #include "HDC1080.hpp"
 #include "stm32g0xx_hal.h"
 
