@@ -38,6 +38,9 @@ target_link_options(${TEST_EXECUTABLE} PRIVATE
 	-Wl,--print-memory-usage
 )
 
+set_target_properties(${TEST_EXECUTABLE} PROPERTIES
+	EXCLUDE_FROM_ALL TRUE
+)
 
 add_custom_command(TARGET ${TEST_EXECUTABLE} POST_BUILD
 	COMMAND ${CMAKE_SIZE} $<TARGET_FILE:${TARGET_EXECUTABLE}>
