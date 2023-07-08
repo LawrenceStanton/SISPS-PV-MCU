@@ -22,7 +22,6 @@ if(CMAKE_CROSSCOMPILING)
 		-fdata-sections
 		-ffunction-sections
 		--specs=nano.specs
-		-Wl,--gc-section	
 	)
 	set(CROSSCOMPILE_CXXFLAGS
 		-fno-rtti
@@ -30,11 +29,29 @@ if(CMAKE_CROSSCOMPILING)
 		-fno-threadsafe-statics
 	)
 
+	set(CROSSCOMPILE_OPTIMISATION_FLAGS_DEBUG
+		-Og
+		-g3
+		-ggdb
+	)
+
+	set(CROSSCOMPILE_OPTIMISATION_FLAGS_RELEASE
+		-O3
+		-g0
+	)
+
 	add_compile_options(
 		${CPU_PARAMETERS}
 		${CROSSCOMPILE_CFLAGS}
 		"$<$<COMPILE_LANGUAGE:CXX>:${CROSSCOMPILE_CXXFLAGS}>"
+		"$<$<CONFIG:Debug>:${CROSSCOMPILE_OPTIMISATION_FLAGS_DEBUG}>"
+		"$<$<CONFIG:Release>:${CROSSCOMPILE_OPTIMISATION_FLAGS_RELEASE}>"
 	)
+
+	add_link_options(
+		-Wl,--gc-section
+	)
+
 endif()
 
 set(APPLICATION_INCLUDE_DIRECTORIES
