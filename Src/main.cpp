@@ -32,7 +32,7 @@ UART_HandleTypeDef huart3;
 I2C_HDC1080 hdc1080_i2c{&hi2c1};
 HDC1080		hdc1080{&hdc1080_i2c};
 
-int main() {
+int main(void) {
 	HAL_Init();
 	SystemClock_Config();
 

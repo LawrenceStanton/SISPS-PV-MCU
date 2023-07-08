@@ -26,16 +26,15 @@ target_link_libraries(${TEST_EXECUTABLE} PRIVATE
 )
 
 target_link_options(${TEST_EXECUTABLE} PRIVATE
-	-T${LINKER_SCRIPT}
 	${CPU_PARAMETERS}
-	# --specs=nano.specs
-	-Wl,--start-group
+	--specs=nano.specs
+	-T${LINKER_SCRIPT}
+	LINKER:--start-group
 	-lc
 	-lm
-	-lstdc++ 
-	-lsupc++
-	-Wl,--end-group
-	-Wl,--print-memory-usage
+	-lnosys
+	LINKER:--end-group
+	LINKER:-Map=${TEST_EXECUTABLE}.map,--cref
 )
 
 set_target_properties(${TEST_EXECUTABLE} PROPERTIES

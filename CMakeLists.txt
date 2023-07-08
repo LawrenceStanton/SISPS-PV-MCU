@@ -21,7 +21,6 @@ if(CMAKE_CROSSCOMPILING)
 	set(CROSSCOMPILE_CFLAGS
 		-fdata-sections
 		-ffunction-sections
-		--specs=nano.specs
 	)
 	set(CROSSCOMPILE_CXXFLAGS
 		-fno-rtti
@@ -31,7 +30,7 @@ if(CMAKE_CROSSCOMPILING)
 
 	set(CROSSCOMPILE_OPTIMISATION_FLAGS_DEBUG
 		-Og
-		-g3
+		-gdwarf-2
 		-ggdb
 	)
 
@@ -48,8 +47,13 @@ if(CMAKE_CROSSCOMPILING)
 		"$<$<CONFIG:Release>:${CROSSCOMPILE_OPTIMISATION_FLAGS_RELEASE}>"
 	)
 
+	add_compile_definitions(
+		$<$<CONFIG:Debug>:DEBUG>
+	)
+
 	add_link_options(
-		-Wl,--gc-section
+		LINKER:--gc-section
+		LINKER:--print-memory-usage
 	)
 
 endif()
@@ -135,12 +139,7 @@ if(CMAKE_CROSSCOMPILING)
 	)
 
 	target_compile_options(STM32CubeG0_HAL PRIVATE
-		# ${CPU_PARAMETERS}
-		# -Wall
-		# -Wpedantic
-		# -Og
-		# -g3
-		# -ggdb
+		
 	)
 
 	add_library(SISPS::HAL ALIAS STM32CubeG0_HAL)
@@ -160,12 +159,7 @@ if(CMAKE_CROSSCOMPILING)
 	)
 
 	target_compile_options(STM32CubeG0_FREERTOS PRIVATE
-		# ${CPU_PARAMETERS}
-		# -Wall
-		# -Wpedantic
-		# -Og
-		# -g3
-		# -ggdb
+		
 	)
 
 	add_library(SISPS::FreeRTOS ALIAS STM32CubeG0_FREERTOS)
@@ -187,18 +181,11 @@ if(CMAKE_CROSSCOMPILING)
 	target_include_directories(${TARGET_EXECUTABLE} PRIVATE
 		${APPLICATION_INCLUDE_DIRECTORIES}
 	)
-	target_include_directories(${TARGET_EXECUTABLE} SYSTEM PRIVATE
-		# ${STM32CUBEG0_HAL_INCLUDE_DIRECTORIES}
-		# ${STM32CUBEG0_FREERTOS_INCLUDE_DIRECTORIES}
-	)
 
 	target_compile_options(${TARGET_EXECUTABLE} PRIVATE
-		# ${CPU_PARAMETERS}
-		# -Wall
-		# -Wpedantic
-		# -O0
-		# -g3
-		# -ggdb
+		-Wall
+		-Wextra
+		-Wpedantic
 	)
 
 	target_link_libraries(
@@ -206,20 +193,19 @@ if(CMAKE_CROSSCOMPILING)
 		STM32CubeG0_HAL
 		STM32CubeG0_FREERTOS
 		SISPS::Lib
-		etl
+		etl::etl
 	)
 
 	target_link_options(${TARGET_EXECUTABLE} PRIVATE
-		-T${LINKER_SCRIPT}
 		${CPU_PARAMETERS}
-		-Wl,-Map=${TARGET_EXECUTABLE}.map
-		-Wl,--start-group
+		--specs=nano.specs
+		-T${LINKER_SCRIPT}
+		LINKER:--start-group
 		-lc
 		-lm
-		-lstdc++
-		-lsupc++
-		-Wl,--end-group
-		-Wl,--print-memory-usage
+		-lnosys
+		LINKER:--end-group
+		LINKER:-Map=${TARGET_EXECUTABLE}.map,--cref
 	)
 
 
