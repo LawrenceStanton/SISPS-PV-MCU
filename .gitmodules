@@ -10,3 +10,6 @@ url = https://github.com/LawrenceStanton/SISPS-Commons
 [submodule "Modules/HDC1080"]
 	path = Modules/HDC1080
 	url = https://github.com/LawrenceStanton/HDC1080
+[submodule "Modules/TMP116"]
+	path = Modules/TMP116
+	url = https://github.com/LawrenceStanton/TMP116
