@@ -12,12 +12,12 @@
 
 #include "stm32g0xx_hal.h"
 
-class I2C_TMP116 : public TMP116::I2C {
+class TMP116_I2C : public TMP116::I2C {
 	I2C_HandleTypeDef *hi2c;
 
 public:
 	virtual std::optional<Register> read(DeviceAddress deviceAddress, MemoryAddress address) final;
 	virtual std::optional<Register> write(DeviceAddress deviceAddress, MemoryAddress address, Register data) final;
 
-	I2C_TMP116(I2C_HandleTypeDef *hi2c) : hi2c(hi2c) {}
+	TMP116_I2C(I2C_HandleTypeDef *hi2c) : hi2c(hi2c) {}
 };

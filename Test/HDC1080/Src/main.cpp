@@ -1,7 +1,7 @@
 /**
  ******************************************************************************
  * @file			: main.cpp
- * @brief			: Test of HDC1080 Peripheral
+ * @brief			: Test of HDC1080 Peripheral for SISPS-PV project.
  * @author			: Lawrence Stanton
  ******************************************************************************
  * @details
@@ -9,14 +9,14 @@
  * checking the results. Where possible, certain values are also checked
  * for typically valid results.
  *
- * A PASS is indicated by the LEDs flashing every 1s.
+ * A PASS is indicated by the LEDs toggling every 1s.
  * A FAIL is indicated by the LEDs being on solid ON-OFF-ON.
+ * An single FAIL will permanently result in a toggling ON-OFF-ON pattern.
  *
  * The test is run recursively in an infinite loop.
  */
 
 #include "main.h"
-#include "stm32g0xx_hal.h"
 
 #include <cmath>
 
@@ -28,7 +28,7 @@ void MX_GPIO_Init(void);
 void MX_I2C1_Init(void);
 
 I2C_HandleTypeDef hi2c1;
-I2C_HDC1080		  hdc1080_i2c{&hi2c1};
+HDC1080_I2C		  hdc1080_i2c{&hi2c1};
 HDC1080			  hdc1080{&hdc1080_i2c};
 
 using Register = HDC1080::I2C::Register;
@@ -42,14 +42,12 @@ static std::optional<uint64_t> serialID		  = 0x0ul;
 const auto deviceIDExpected		  = 0x1050u;
 const auto manufacturerIDExpected = 0x5449u;
 
-int main() {
+int main(void) {
 	HAL_Init();
 	SystemClock_Config();
 
 	MX_GPIO_Init();
 	MX_I2C1_Init();
-
-	HAL_Delay(1000);
 
 	while (true) {
 		// Get all registers with default config.

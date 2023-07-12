@@ -8,12 +8,12 @@
 
 #include "TMP116_I2C.hpp"
 
-using I2C			= I2C_TMP116;
+using I2C			= TMP116_I2C;
 using Register		= TMP116::I2C::Register;
 using MemoryAddress = TMP116::I2C::MemoryAddress;
 using DeviceAddress = TMP116::I2C::DeviceAddress;
 
-std::optional<Register> I2C_TMP116::read(DeviceAddress deviceAddress, MemoryAddress address) {
+std::optional<Register> TMP116_I2C::read(DeviceAddress deviceAddress, MemoryAddress address) {
 	uint8_t data[sizeof(Register)];
 	auto	resultCode = HAL_I2C_Mem_Read(
 		   this->hi2c,								 //
@@ -31,7 +31,7 @@ std::optional<Register> I2C_TMP116::read(DeviceAddress deviceAddress, MemoryAddr
 	return result;
 }
 
-std::optional<Register> I2C_TMP116::write(DeviceAddress deviceAddress, MemoryAddress address, Register data) {
+std::optional<Register> TMP116_I2C::write(DeviceAddress deviceAddress, MemoryAddress address, Register data) {
 	uint8_t dataBytes[] = {
 		static_cast<uint8_t>(data >> 8),  // MSB First
 		static_cast<uint8_t>(data & 0xFF) // LSB Second

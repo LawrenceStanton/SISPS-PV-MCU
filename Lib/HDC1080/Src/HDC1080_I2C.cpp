@@ -10,7 +10,7 @@
 
 #include "stm32g0xx_hal_i2c.h"
 
-using I2C			= I2C_HDC1080;
+using I2C			= HDC1080_I2C;
 using Register		= HDC1080::I2C::Register;
 using MemoryAddress = HDC1080::I2C::MemoryAddress;
 
@@ -82,6 +82,6 @@ std::optional<uint8_t> I2C::receive() {
 	return data;
 }
 
-void I2C::delay(uint32_t ms) {
+void I2C::delay(uint32_t ms) const {
 	HAL_Delay(ms);
 }
