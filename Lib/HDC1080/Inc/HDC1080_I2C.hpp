@@ -4,21 +4,12 @@
  * @brief			: I2C interface for the HDC1080.
  * @author			: Lawrence Stanton
  ******************************************************************************
- * @attention
- *
- * © LD Stanton 2023
- *
- * This file and its content are the copyright property of the author. All
- * rights are reserved. No warranty is given. No liability is assumed.
- * Confidential unless licensed otherwise. If licensed, refer to the
- * accompanying file "LICENCE" for license details.
- *
- ******************************************************************************
  */
 
 #pragma once
 
 #include "HDC1080.hpp"
+
 #include "stm32g0xx_hal.h"
 
 class I2C_HDC1080 : public HDC1080::I2C {
@@ -40,5 +31,3 @@ public:
 	 */
 	I2C_HDC1080(I2C_HandleTypeDef *hi2c) : hi2c(hi2c) {}
 };
-
-/*** END OF FILE ***/

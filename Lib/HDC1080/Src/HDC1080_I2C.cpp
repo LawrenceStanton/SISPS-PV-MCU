@@ -1,4 +1,13 @@
+/**
+ ******************************************************************************
+ * @file			: HDC1080_I2C.cpp
+ * @brief			: Source for HDC1080_I2C.hpp
+ * @author			: Lawrence Stanton
+ ******************************************************************************
+ */
+
 #include "HDC1080_I2C.hpp"
+
 #include "stm32g0xx_hal_i2c.h"
 
 using I2C			= I2C_HDC1080;
@@ -17,8 +26,7 @@ std::optional<Register> I2C::read(MemoryAddress address) {
 		   10					  // milliseconds
 	   );
 
-	if (resultCode != HAL_OK)
-		return std::nullopt;
+	if (resultCode != HAL_OK) return std::nullopt;
 
 	Register result = data[0] << 8 | data[1];
 	return result;
@@ -40,8 +48,7 @@ std::optional<Register> I2C::write(MemoryAddress address, Register data) {
 		10					   // milliseconds
 	);
 
-	if (resultCode != HAL_OK)
-		return std::nullopt;
+	if (resultCode != HAL_OK) return std::nullopt;
 
 	return data;
 }
@@ -55,8 +62,7 @@ std::optional<uint8_t> I2C::transmit(uint8_t data) {
 		10					   // milliseconds
 	);
 
-	if (resultCode != HAL_OK)
-		return std::nullopt;
+	if (resultCode != HAL_OK) return std::nullopt;
 
 	return data;
 }
@@ -71,8 +77,7 @@ std::optional<uint8_t> I2C::receive() {
 		   10					  // milliseconds
 	   );
 
-	if (resultCode != HAL_OK)
-		return std::nullopt;
+	if (resultCode != HAL_OK) return std::nullopt;
 
 	return data;
 }
