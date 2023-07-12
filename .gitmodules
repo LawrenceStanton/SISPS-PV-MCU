@@ -1,15 +1,15 @@
+[submodule "Modules/SISPS-Commons"]
+path = Modules/SISPS-Commons
+url = https://github.com/LawrenceStanton/SISPS-Commons
+[submodule "Modules/HDC1080"]
+path = Modules/HDC1080
+url = https://github.com/LawrenceStanton/HDC1080
+[submodule "Modules/TMP116"]
+path = Modules/TMP116
+url = https://github.com/LawrenceStanton/TMP116
 [submodule "Modules/STM32CubeG0"]
 path = Modules/STM32CubeG0
 url = https://github.com/STMicroelectronics/STM32CubeG0
 [submodule "Modules/etl"]
 path = Modules/etl
 url = https://github.com/ETLCPP/etl
-[submodule "Modules/SISPS-Commons"]
-path = Modules/SISPS-Commons
-url = https://github.com/LawrenceStanton/SISPS-Commons
-[submodule "Modules/HDC1080"]
-	path = Modules/HDC1080
-	url = https://github.com/LawrenceStanton/HDC1080
-[submodule "Modules/TMP116"]
-	path = Modules/TMP116
-	url = https://github.com/LawrenceStanton/TMP116
