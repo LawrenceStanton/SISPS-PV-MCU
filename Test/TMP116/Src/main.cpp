@@ -31,7 +31,8 @@ TMP116			  tmp116{&tmp116_i2c, TMP116::DeviceAddress::ADD0_GND};
 
 using Register = TMP116::I2C::Register;
 
-static float temperature = -254.0;
+static float				   temperature = -254.0;
+static std::optional<Register> deviceId	   = 0x0000u;
 
 int main(void) {
 	HAL_Init();
@@ -43,10 +44,17 @@ int main(void) {
 	while (true) {
 		// Get all registers with default config.
 		temperature = tmp116.getTemperature();
+		deviceId	= tmp116.getDeviceId();
 
-		bool getRegistersSuccessDefaultConfig = temperature > -40 && temperature < 40;
+		bool getRegistersSuccessDefaultConfig = temperature > -40 && temperature < 40 //
+											 && deviceId == 0x1116;
 
-		if (getRegistersSuccessDefaultConfig) {
+		bool setHighLimitSuccess = tmp116.setHighLimit(temperature - 5.0f).has_value(); // Should trigger an alert.
+		bool setLowLimitSuccess	 = tmp116.setLowLimit(temperature + 5.0f).has_value();	// Should trigger an alert.
+
+		bool setRegistersSuccess = setHighLimitSuccess && setLowLimitSuccess;
+
+		if (getRegistersSuccessDefaultConfig && setRegistersSuccess) {
 			HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
 			HAL_GPIO_TogglePin(LED2_GPIO_Port, LED2_Pin);
 			HAL_GPIO_TogglePin(LED3_GPIO_Port, LED3_Pin);
