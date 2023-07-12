@@ -1,31 +1,50 @@
 {
 	"configurations": [
 		{
+			"name": "Debug with ST-Link",
 			"cwd": "${workspaceFolder}",
 			"executable": "${command:cmake.launchTargetPath}",
-			"name": "Debug with ST-Link",
 			"request": "launch",
 			"type": "cortex-debug",
 			"runToEntryPoint": "main",
 			"showDevDebugOutput": "none",
 			"servertype": "stlink",
 			"armToolchainPath": "",
-			"gdbPath": "",
+			"gdbPath": "gdb",
 			"liveWatch": {
 				"enabled": true,
 				"samplesPerSecond": 4
 			}
 		},
 		{
+			"name": "Attach with ST-Link",
 			"cwd": "${workspaceFolder}",
 			"executable": "${command:cmake.launchTargetPath}",
-			"name": "Attach with ST-Link",
 			"request": "attach",
 			"type": "cortex-debug",
 			"showDevDebugOutput": "none",
 			"servertype": "stlink",
 			"armToolchainPath": "",
-			"gdbPath": "",
+			"gdbPath": "gdb",
+			"liveWatch": {
+				"enabled": true,
+				"samplesPerSecond": 4
+			}
+		},
+		{
+			"name": "Debug with OpenOCD",
+			"cwd": "${workspaceRoot}",
+			"executable": "${command:cmake.launchTargetPath}",
+			"request": "launch",
+			"type": "cortex-debug",
+			"servertype": "openocd",
+			"configFiles": ["openocd.cfg"],
+			"searchDir": [],
+			"runToEntryPoint": "main",
+			"showDevDebugOutput": "none",
+			"armToolchainPath": "",
+			"gdbPath": "gdb",
+			"serverpath": "openocd",
 			"liveWatch": {
 				"enabled": true,
 				"samplesPerSecond": 4
