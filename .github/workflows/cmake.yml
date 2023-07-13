@@ -3,15 +3,26 @@ name: CMake
 on: [push, pull_request]
 
 jobs:
-    build-debug:
+    build:
         strategy:
             matrix:
                 os: [ubuntu-latest]
+                preset: [Debug, Release, Server]
+
+            fail-fast: false
+
         runs-on: ${{ matrix.os }}
 
         steps:
-            - uses: actions/checkout@v3
-            - uses: carlosperate/arm-none-eabi-gcc-action@v1
+            - name: Checkout
+              uses: actions/checkout@v3
+
+            - name: Install ARM Embedded Toolchain
+              if: matrix.preset != 'Server'
+              uses: carlosperate/arm-none-eabi-gcc-action@v1
+
+            - run: arm-none-eabi-gcc --version
+              if: ${{success() && matrix.preset != 'Server'}}
 
             - name: Submodule Update
               run: git submodule update --init --recursive
@@ -19,57 +30,11 @@ jobs:
             - name: CMake Configure
               run: |
                   cmake --version
-                  cmake --preset Debug
+                  cmake --preset ${{matrix.preset}}
 
             - name: Build
-              run: |
-                  arm-none-eabi-gcc --version
-                  cmake --build --preset Debug --parallel $(getconf _NPROCESSORS_ONLN)
-
-    build-release:
-        strategy:
-            matrix:
-                os: [ubuntu-latest]
-
-        runs-on: ${{ matrix.os }}
-
-        steps:
-            - uses: actions/checkout@v3
-            - uses: carlosperate/arm-none-eabi-gcc-action@v1
-
-            - name: Submodule Update
-              run: git submodule update --init --recursive
-
-            - name: CMake Configure
-              run: |
-                  cmake --version
-                  cmake --preset Release
-
-            - name: Build
-              run: |
-                  arm-none-eabi-gcc --version
-                  cmake --build --preset Release --parallel $(getconf _NPROCESSORS_ONLN)
-
-    build-server:
-        strategy:
-            matrix:
-                os: [ubuntu-latest]
-
-        runs-on: ${{ matrix.os }}
-
-        steps:
-            - uses: actions/checkout@v3
-
-            - name: Submodule Update
-              run: git submodule update --init --recursive
-
-            - name: CMake Configure
-              run: |
-                  cmake --version
-                  cmake --preset Server
-
-            - name: Build
-              run: cmake --build --preset Server --parallel $(getconf _NPROCESSORS_ONLN)
+              run: cmake --build --preset ${{matrix.preset}} --parallel $(getconf _NPROCESSORS_ONLN)
 
             - name: Test
-              run: ctest --preset Server --parallel $(getconf _NPROCESSORS_ONLN)
+              if: matrix.preset == 'Server'
+              run: ctest --preset ${{matrix.preset}} --parallel $(getconf _NPROCESSORS_ONLN)
