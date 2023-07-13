@@ -20,9 +20,9 @@ jobs:
             - name: CMake Configure
               run: |
                   cmake --version
-                  cmake --preset Release
+                  cmake --preset Debug
 
             - name: Build
               run: |
                   arm-none-eabi-gcc --version
-                  cmake --build --preset Release --parallel $(getconf _NPROCESSORS_ONLN)
+                  cmake --build --preset Debug --parallel $(getconf _NPROCESSORS_ONLN)
