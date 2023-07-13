@@ -1,4 +1,4 @@
-project(TMP116_Test)
+project(SISPS-PV-TMP116-Test)
 
 set(TEST_EXECUTABLE ${PROJECT_NAME})
 
