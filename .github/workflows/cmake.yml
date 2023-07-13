@@ -1,20 +1,19 @@
 name: CMake
 
-on:
-    push:
-        branches: ['main']
-    pull_request:
-        branches: ['main']
+on: [push, pull_request]
 
 jobs:
-    ReleaseBuild:
-        runs-on: ubuntu-latest
+    build-debug:
+        strategy:
+            matrix:
+                os: [ubuntu-latest]
+        runs-on: ${{ matrix.os }}
 
         steps:
             - uses: actions/checkout@v3
             - uses: carlosperate/arm-none-eabi-gcc-action@v1
 
-            - name: Submoduel Update
+            - name: Submodule Update
               run: git submodule update --init --recursive
 
             - name: CMake Configure
@@ -26,3 +25,51 @@ jobs:
               run: |
                   arm-none-eabi-gcc --version
                   cmake --build --preset Debug --parallel $(getconf _NPROCESSORS_ONLN)
+
+    build-release:
+        strategy:
+            matrix:
+                os: [ubuntu-latest]
+
+        runs-on: ${{ matrix.os }}
+
+        steps:
+            - uses: actions/checkout@v3
+            - uses: carlosperate/arm-none-eabi-gcc-action@v1
+
+            - name: Submodule Update
+              run: git submodule update --init --recursive
+
+            - name: CMake Configure
+              run: |
+                  cmake --version
+                  cmake --preset Release
+
+            - name: Build
+              run: |
+                  arm-none-eabi-gcc --version
+                  cmake --build --preset Release --parallel $(getconf _NPROCESSORS_ONLN)
+
+    build-server:
+        strategy:
+            matrix:
+                os: [ubuntu-latest]
+
+        runs-on: ${{ matrix.os }}
+
+        steps:
+            - uses: actions/checkout@v3
+
+            - name: Submodule Update
+              run: git submodule update --init --recursive
+
+            - name: CMake Configure
+              run: |
+                  cmake --version
+                  cmake --preset Server
+
+            - name: Build
+              run: cmake --build --preset Server --parallel $(getconf _NPROCESSORS_ONLN)
+
+            - name: Test
+              run: ctest --preset Server --parallel $(getconf _NPROCESSORS_ONLN)
