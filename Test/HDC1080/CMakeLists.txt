@@ -38,7 +38,7 @@ target_link_options(${TEST_EXECUTABLE} PRIVATE
 )
 
 set_target_properties(${TEST_EXECUTABLE} PROPERTIES
-	EXCLUDE_FROM_ALL TRUE
+	EXCLUDE_FROM_ALL FALSE
 )
 
 add_custom_command(TARGET ${TEST_EXECUTABLE} POST_BUILD

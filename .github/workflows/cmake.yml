@@ -1,0 +1,28 @@
+name: CMake
+
+on:
+    push:
+        branches: ['main']
+    pull_request:
+        branches: ['main']
+
+jobs:
+    ReleaseBuild:
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v3
+            - uses: carlosperate/arm-none-eabi-gcc-action@v1
+
+            - name: Submoduel Update
+              run: git submodule update --init --recursive
+
+            - name: CMake Configure
+              run: |
+                  cmake --version
+                  cmake --preset Release
+
+            - name: Build
+              run: |
+                  arm-none-eabi-gcc --version
+                  cmake --build --preset Release --parallel $(getconf _NPROCESSORS_ONLN)

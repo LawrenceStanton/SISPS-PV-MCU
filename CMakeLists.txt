@@ -123,7 +123,7 @@ add_subdirectory(Modules)
 
 if(CMAKE_CROSSCOMPILING)
 
-	include(CMake/STM32CubeG0.cmake)
+	include(CMake/stm32CubeG0.cmake)
 
 	# HAL Library
 	add_library(STM32CubeG0_HAL STATIC
