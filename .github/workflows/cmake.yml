@@ -20,6 +20,8 @@ jobs:
         steps:
             - name: Checkout
               uses: actions/checkout@v3
+              with:
+                  submodules: true
 
             - name: Install ARM Embedded Toolchain
               if: matrix.preset != 'Server'
@@ -27,9 +29,6 @@ jobs:
 
             - run: arm-none-eabi-gcc --version
               if: ${{success() && matrix.preset != 'Server'}}
-
-            - name: Submodule Update
-              run: git submodule update --init --recursive
 
             - name: CMake Configure
               run: |
