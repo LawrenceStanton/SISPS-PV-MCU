@@ -135,3 +135,5 @@ Branch protection rules are currently not implemented, and so failing commits wi
 The hardware for this project is designed in Altium Designer. The project files are not included in this repository. Due to the limitations of Altium365, the live design files are not available publicly, but can be found in the read-only mirror repository [SISPS-PV-PCB]([https://git](https://github.com/LawrenceStanton/SISPS-PV-PCB)).
 
 More information on the hardware design, including requesting access, can be found in [SISPS-PV-PCB](https://github.com/LawrenceStanton/SISPS-PV-PCB).
+
+Visit the [Github Pages](https://lawrencestanton.github.io/SISPS-PV/) site for this repository to view the latest hardware release.
