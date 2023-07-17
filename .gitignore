@@ -5,3 +5,7 @@ Build
 .vscode/**
 !.vscode/launch.json
 !.vscode/tasks.json
+
+CMakeUserPresets.json
+
+Altium/Private/**
