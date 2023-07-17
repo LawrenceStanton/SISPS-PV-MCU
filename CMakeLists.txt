@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.24)
 
-project(SISPS-PV)
+project(SISPS-PV-MCU)
 
 set(TARGET_EXECUTABLE ${CMAKE_PROJECT_NAME})
 set(LOCAL_TEST_EXECUTABLE ${CMAKE_PROJECT_NAME}-LocalTest)

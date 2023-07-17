@@ -13,7 +13,7 @@
 ######################################
 # target
 ######################################
-TARGET = SISPS-PV
+TARGET = SISPS-PV-MCU-MCU
 
 
 ######################################
@@ -40,38 +40,38 @@ C_SOURCES =  \
 ../Src/stm32g0xx_it.c \
 ../Src/stm32g0xx_hal_msp.c \
 ../Src/system_stm32g0xx.c \
-/Users/lawrencestanton/GitHub/SISPS-PV/Modules/STM32CubeG0/Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_rcc.c \
-/Users/lawrencestanton/GitHub/SISPS-PV/Modules/STM32CubeG0/Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_rcc_ex.c \
-/Users/lawrencestanton/GitHub/SISPS-PV/Modules/STM32CubeG0/Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_ll_rcc.c \
-/Users/lawrencestanton/GitHub/SISPS-PV/Modules/STM32CubeG0/Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_flash.c \
-/Users/lawrencestanton/GitHub/SISPS-PV/Modules/STM32CubeG0/Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_flash_ex.c \
-/Users/lawrencestanton/GitHub/SISPS-PV/Modules/STM32CubeG0/Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_gpio.c \
-/Users/lawrencestanton/GitHub/SISPS-PV/Modules/STM32CubeG0/Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_dma.c \
-/Users/lawrencestanton/GitHub/SISPS-PV/Modules/STM32CubeG0/Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_dma_ex.c \
-/Users/lawrencestanton/GitHub/SISPS-PV/Modules/STM32CubeG0/Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_ll_dma.c \
-/Users/lawrencestanton/GitHub/SISPS-PV/Modules/STM32CubeG0/Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_pwr.c \
-/Users/lawrencestanton/GitHub/SISPS-PV/Modules/STM32CubeG0/Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_pwr_ex.c \
-/Users/lawrencestanton/GitHub/SISPS-PV/Modules/STM32CubeG0/Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_cortex.c \
-/Users/lawrencestanton/GitHub/SISPS-PV/Modules/STM32CubeG0/Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal.c \
-/Users/lawrencestanton/GitHub/SISPS-PV/Modules/STM32CubeG0/Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_exti.c \
-/Users/lawrencestanton/GitHub/SISPS-PV/Modules/STM32CubeG0/Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_tim.c \
-/Users/lawrencestanton/GitHub/SISPS-PV/Modules/STM32CubeG0/Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_tim_ex.c \
-/Users/lawrencestanton/GitHub/SISPS-PV/Modules/STM32CubeG0/Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_i2c.c \
-/Users/lawrencestanton/GitHub/SISPS-PV/Modules/STM32CubeG0/Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_i2c_ex.c \
-/Users/lawrencestanton/GitHub/SISPS-PV/Modules/STM32CubeG0/Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_uart.c \
-/Users/lawrencestanton/GitHub/SISPS-PV/Modules/STM32CubeG0/Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_uart_ex.c \
+/Users/lawrencestanton/GitHub/SISPS-PV-MCU/Modules/STM32CubeG0/Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_rcc.c \
+/Users/lawrencestanton/GitHub/SISPS-PV-MCU/Modules/STM32CubeG0/Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_rcc_ex.c \
+/Users/lawrencestanton/GitHub/SISPS-PV-MCU/Modules/STM32CubeG0/Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_ll_rcc.c \
+/Users/lawrencestanton/GitHub/SISPS-PV-MCU/Modules/STM32CubeG0/Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_flash.c \
+/Users/lawrencestanton/GitHub/SISPS-PV-MCU/Modules/STM32CubeG0/Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_flash_ex.c \
+/Users/lawrencestanton/GitHub/SISPS-PV-MCU/Modules/STM32CubeG0/Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_gpio.c \
+/Users/lawrencestanton/GitHub/SISPS-PV-MCU/Modules/STM32CubeG0/Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_dma.c \
+/Users/lawrencestanton/GitHub/SISPS-PV-MCU/Modules/STM32CubeG0/Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_dma_ex.c \
+/Users/lawrencestanton/GitHub/SISPS-PV-MCU/Modules/STM32CubeG0/Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_ll_dma.c \
+/Users/lawrencestanton/GitHub/SISPS-PV-MCU/Modules/STM32CubeG0/Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_pwr.c \
+/Users/lawrencestanton/GitHub/SISPS-PV-MCU/Modules/STM32CubeG0/Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_pwr_ex.c \
+/Users/lawrencestanton/GitHub/SISPS-PV-MCU/Modules/STM32CubeG0/Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_cortex.c \
+/Users/lawrencestanton/GitHub/SISPS-PV-MCU/Modules/STM32CubeG0/Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal.c \
+/Users/lawrencestanton/GitHub/SISPS-PV-MCU/Modules/STM32CubeG0/Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_exti.c \
+/Users/lawrencestanton/GitHub/SISPS-PV-MCU/Modules/STM32CubeG0/Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_tim.c \
+/Users/lawrencestanton/GitHub/SISPS-PV-MCU/Modules/STM32CubeG0/Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_tim_ex.c \
+/Users/lawrencestanton/GitHub/SISPS-PV-MCU/Modules/STM32CubeG0/Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_i2c.c \
+/Users/lawrencestanton/GitHub/SISPS-PV-MCU/Modules/STM32CubeG0/Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_i2c_ex.c \
+/Users/lawrencestanton/GitHub/SISPS-PV-MCU/Modules/STM32CubeG0/Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_uart.c \
+/Users/lawrencestanton/GitHub/SISPS-PV-MCU/Modules/STM32CubeG0/Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_uart_ex.c \
 ../Src/app_freertos.c \
 ../Src/stm32g0xx_hal_timebase_tim.c \
-/Users/lawrencestanton/GitHub/SISPS-PV/Modules/STM32CubeG0/Middlewares/Third_Party/FreeRTOS/Source/croutine.c \
-/Users/lawrencestanton/GitHub/SISPS-PV/Modules/STM32CubeG0/Middlewares/Third_Party/FreeRTOS/Source/event_groups.c \
-/Users/lawrencestanton/GitHub/SISPS-PV/Modules/STM32CubeG0/Middlewares/Third_Party/FreeRTOS/Source/list.c \
-/Users/lawrencestanton/GitHub/SISPS-PV/Modules/STM32CubeG0/Middlewares/Third_Party/FreeRTOS/Source/queue.c \
-/Users/lawrencestanton/GitHub/SISPS-PV/Modules/STM32CubeG0/Middlewares/Third_Party/FreeRTOS/Source/stream_buffer.c \
-/Users/lawrencestanton/GitHub/SISPS-PV/Modules/STM32CubeG0/Middlewares/Third_Party/FreeRTOS/Source/tasks.c \
-/Users/lawrencestanton/GitHub/SISPS-PV/Modules/STM32CubeG0/Middlewares/Third_Party/FreeRTOS/Source/timers.c \
-/Users/lawrencestanton/GitHub/SISPS-PV/Modules/STM32CubeG0/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.c \
-/Users/lawrencestanton/GitHub/SISPS-PV/Modules/STM32CubeG0/Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c \
-/Users/lawrencestanton/GitHub/SISPS-PV/Modules/STM32CubeG0/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM0/port.c
+/Users/lawrencestanton/GitHub/SISPS-PV-MCU/Modules/STM32CubeG0/Middlewares/Third_Party/FreeRTOS/Source/croutine.c \
+/Users/lawrencestanton/GitHub/SISPS-PV-MCU/Modules/STM32CubeG0/Middlewares/Third_Party/FreeRTOS/Source/event_groups.c \
+/Users/lawrencestanton/GitHub/SISPS-PV-MCU/Modules/STM32CubeG0/Middlewares/Third_Party/FreeRTOS/Source/list.c \
+/Users/lawrencestanton/GitHub/SISPS-PV-MCU/Modules/STM32CubeG0/Middlewares/Third_Party/FreeRTOS/Source/queue.c \
+/Users/lawrencestanton/GitHub/SISPS-PV-MCU/Modules/STM32CubeG0/Middlewares/Third_Party/FreeRTOS/Source/stream_buffer.c \
+/Users/lawrencestanton/GitHub/SISPS-PV-MCU/Modules/STM32CubeG0/Middlewares/Third_Party/FreeRTOS/Source/tasks.c \
+/Users/lawrencestanton/GitHub/SISPS-PV-MCU/Modules/STM32CubeG0/Middlewares/Third_Party/FreeRTOS/Source/timers.c \
+/Users/lawrencestanton/GitHub/SISPS-PV-MCU/Modules/STM32CubeG0/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.c \
+/Users/lawrencestanton/GitHub/SISPS-PV-MCU/Modules/STM32CubeG0/Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c \
+/Users/lawrencestanton/GitHub/SISPS-PV-MCU/Modules/STM32CubeG0/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM0/port.c
 
 # ASM sources
 ASM_SOURCES =  \
@@ -130,13 +130,13 @@ AS_INCLUDES =  \
 # C includes
 C_INCLUDES =  \
 -I../Inc \
--I/Users/lawrencestanton/GitHub/SISPS-PV/Modules/STM32CubeG0/Drivers/STM32G0xx_HAL_Driver/Inc \
--I/Users/lawrencestanton/GitHub/SISPS-PV/Modules/STM32CubeG0/Drivers/STM32G0xx_HAL_Driver/Inc/Legacy \
--I/Users/lawrencestanton/GitHub/SISPS-PV/Modules/STM32CubeG0/Drivers/CMSIS/Device/ST/STM32G0xx/Include \
--I/Users/lawrencestanton/GitHub/SISPS-PV/Modules/STM32CubeG0/Drivers/CMSIS/Include \
--I/Users/lawrencestanton/GitHub/SISPS-PV/Modules/STM32CubeG0/Middlewares/Third_Party/FreeRTOS/Source/include \
--I/Users/lawrencestanton/GitHub/SISPS-PV/Modules/STM32CubeG0/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS \
--I/Users/lawrencestanton/GitHub/SISPS-PV/Modules/STM32CubeG0/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM0
+-I/Users/lawrencestanton/GitHub/SISPS-PV-MCU/Modules/STM32CubeG0/Drivers/STM32G0xx_HAL_Driver/Inc \
+-I/Users/lawrencestanton/GitHub/SISPS-PV-MCU/Modules/STM32CubeG0/Drivers/STM32G0xx_HAL_Driver/Inc/Legacy \
+-I/Users/lawrencestanton/GitHub/SISPS-PV-MCU/Modules/STM32CubeG0/Drivers/CMSIS/Device/ST/STM32G0xx/Include \
+-I/Users/lawrencestanton/GitHub/SISPS-PV-MCU/Modules/STM32CubeG0/Drivers/CMSIS/Include \
+-I/Users/lawrencestanton/GitHub/SISPS-PV-MCU/Modules/STM32CubeG0/Middlewares/Third_Party/FreeRTOS/Source/include \
+-I/Users/lawrencestanton/GitHub/SISPS-PV-MCU/Modules/STM32CubeG0/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS \
+-I/Users/lawrencestanton/GitHub/SISPS-PV-MCU/Modules/STM32CubeG0/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM0
 
 
 # compile gcc flags

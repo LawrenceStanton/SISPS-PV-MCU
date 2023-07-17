@@ -1,6 +1,6 @@
 add_subdirectory(etl SYSTEM)	# etl::etl
 
-if(SISPSPV_ENABLE_CODE_COVERAGE)
+if(SISPS_ENABLE_CODE_COVERAGE)
 	set(HDC1080_CODE_COVERAGE ON CACHE BOOL "Enable coverage reporting for HDC1080")
 	set(TMP116_CODE_COVERAGE ON CACHE BOOL "Enable coverage reporting for TMP116")
 endif()
