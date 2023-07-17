@@ -1,6 +1,25 @@
 name: CMake
 
-on: [push, pull_request, workflow_dispatch]
+# on: [push, pull_request, workflow_dispatch]
+on:
+    workflow_dispatch:
+    push:
+        paths-ignore:
+            - 'LICENSE.md'
+            - 'README.md'
+            - '.gitignore'
+            - '.gitmodules'
+            - '.clang-format'
+            - '.prettierrc'
+            - '.mxproject'
+            - 'openocd.cfg'
+            - 'index.md'
+            - '.SISPS-PV.ioc'
+            - '.vscode/**'
+            - 'Altium/**'
+            - 'Assets/**'
+            - 'CubeMX/Makefile'
+    pull_request:
 
 jobs:
     build:
