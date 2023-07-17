@@ -47,7 +47,7 @@ int main(void) {
 		deviceId	= tmp116.getDeviceId();
 
 		bool getRegistersSuccessDefaultConfig = temperature > -40 && temperature < 40 //
-											 && deviceId == 0x1116;
+											 && deviceId.has_value() && deviceId.value() == 0x1116;
 
 		bool setHighLimitSuccess = tmp116.setHighLimit(temperature - 5.0f).has_value(); // Should trigger an alert.
 		bool setLowLimitSuccess	 = tmp116.setLowLimit(temperature + 5.0f).has_value();	// Should trigger an alert.
