@@ -13,3 +13,6 @@ url = https://github.com/STMicroelectronics/STM32CubeG0
 [submodule "Modules/etl"]
 path = Modules/etl
 url = https://github.com/ETLCPP/etl
+[submodule "Modules/SM72445"]
+	path = Modules/SM72445
+	url = https://github.com/LawrenceStanton/SM72445
