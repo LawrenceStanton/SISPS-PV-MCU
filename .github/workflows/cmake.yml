@@ -1,6 +1,5 @@
 name: CMake
 
-# on: [push, pull_request, workflow_dispatch]
 on:
     workflow_dispatch:
     push:
@@ -21,6 +20,7 @@ on:
             - 'docs/**'
             - 'CubeMX/Makefile'
     pull_request:
+        branches: ['main']
 
 jobs:
     build:
