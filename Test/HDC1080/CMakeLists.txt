@@ -1,4 +1,4 @@
-project(SISPS-PV-HDC1080-Test)
+project(SISPS-PV-MCU-HDC1080-Test)
 
 set(TEST_EXECUTABLE ${PROJECT_NAME})
 
