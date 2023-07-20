@@ -18,6 +18,8 @@
 
 #include "main.hpp"
 
+#include <cmath>
+
 #include "TMP116.hpp"
 #include "TMP116_I2C.hpp"
 
@@ -30,6 +32,7 @@ TMP116_I2C		  tmp116_i2c{&hi2c1};
 TMP116			  tmp116{&tmp116_i2c, TMP116::DeviceAddress::ADD0_GND};
 
 using Register = TMP116::I2C::Register;
+using Config   = TMP116::Config;
 
 static float				   temperature = -254.0;
 static std::optional<Register> deviceId	   = 0x0000u;
@@ -51,10 +54,26 @@ int main(void) {
 
 		bool setHighLimitSuccess = tmp116.setHighLimit(temperature - 5.0f).has_value(); // Should trigger an alert.
 		bool setLowLimitSuccess	 = tmp116.setLowLimit(temperature + 5.0f).has_value();	// Should trigger an alert.
+		bool setConfigSuccess	 = tmp116
+									.setConfig(
+										Config::TemperatureConversionMode::ONESHOT, //
+										Config::ConversionCycleTime::CONV_500MS,
+										Config::Averages::AVG_32
+									)
+									.has_value();
 
-		bool setRegistersSuccess = setHighLimitSuccess && setLowLimitSuccess;
+		bool setRegistersSuccess = setHighLimitSuccess && setLowLimitSuccess && setConfigSuccess;
 
-		if (getRegistersSuccessDefaultConfig && setRegistersSuccess) {
+		HAL_Delay(500);
+
+		auto configuredTemperature = tmp116.getTemperature();
+
+		bool getTemperatureSuccessConfigured = std::abs(configuredTemperature - temperature) < .8f;
+
+		if (getRegistersSuccessDefaultConfig && //
+			setRegistersSuccess &&				//
+			setConfigSuccess &&					//
+			getTemperatureSuccessConfigured) {
 			HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
 			HAL_GPIO_TogglePin(LED2_GPIO_Port, LED2_Pin);
 			HAL_GPIO_TogglePin(LED3_GPIO_Port, LED3_Pin);
@@ -63,6 +82,8 @@ int main(void) {
 			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_RESET);
 			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, GPIO_PIN_SET);
 		}
+
+		tmp116.setConfig(Config{});
 
 		HAL_Delay(500);
 	}
