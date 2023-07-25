@@ -20,4 +20,5 @@ public:
 	optional<Register> write(DeviceAddress deviceAddress, MemoryAddress memoryAddress, Register data) final;
 
 	explicit SM72445_I2C(I2C_HandleTypeDef *hi2c) : hi2c(hi2c) {}
+	virtual ~SM72445_I2C() = default;
 };
