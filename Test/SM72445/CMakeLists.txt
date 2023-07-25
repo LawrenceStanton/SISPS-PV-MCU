@@ -1,0 +1,57 @@
+project(SISPS-PV-MCU-SM72445-Test)
+
+set(TEST_EXECUTABLE ${PROJECT_NAME})
+
+include(${CMAKE_SOURCE_DIR}/CMake/mcu.cmake)
+include(${CMAKE_SOURCE_DIR}/CMake/scripts.cmake)
+include(${CMAKE_SOURCE_DIR}/CMake/stm32CubeG0.cmake)
+
+file(GLOB APPLICATION_SOURCES
+	${CMAKE_CURRENT_SOURCE_DIR}/Src/*.c
+	${CMAKE_CURRENT_SOURCE_DIR}/Src/*.cpp
+)
+
+add_executable(${TEST_EXECUTABLE}
+	${APPLICATION_SOURCES}
+	${STARTUP_SCRIPT}
+)
+
+target_include_directories(${TEST_EXECUTABLE} PRIVATE
+	${CMAKE_CURRENT_SOURCE_DIR}/Inc
+)
+
+target_link_libraries(${TEST_EXECUTABLE} PRIVATE
+	SISPS::HAL
+	SISPS::SM72445
+)
+
+target_link_options(${TEST_EXECUTABLE} PRIVATE
+	${CPU_PARAMETERS}
+	--specs=nano.specs
+	-T${LINKER_SCRIPT}
+	LINKER:--start-group
+	-lc
+	-lm
+	-lnosys
+	LINKER:--end-group
+	LINKER:-Map=${TEST_EXECUTABLE}.map,--cref
+)
+
+set_target_properties(${TEST_EXECUTABLE} PROPERTIES
+	EXCLUDE_FROM_ALL FALSE
+)
+
+add_custom_command(TARGET ${TEST_EXECUTABLE} POST_BUILD
+	COMMAND ${CMAKE_SIZE} $<TARGET_FILE:${TARGET_EXECUTABLE}>
+)
+
+add_custom_command(TARGET ${TEST_EXECUTABLE} POST_BUILD
+	COMMENT "Generating ${TEST_EXECUTABLE}.hex and ${TEST_EXECUTABLE}.bin"
+	COMMAND ${CMAKE_OBJCOPY} -O ihex $<TARGET_FILE:${TEST_EXECUTABLE}> ${TEST_EXECUTABLE}.hex
+	COMMAND ${CMAKE_OBJCOPY} -O binary $<TARGET_FILE:${TEST_EXECUTABLE}> ${TEST_EXECUTABLE}.bin
+)
+
+add_custom_command(TARGET ${TEST_EXECUTABLE} POST_BUILD
+	COMMENT "Generating ${TEST_EXECUTABLE} Disassembly"
+	COMMAND ${CMAKE_OBJDUMP} -D -C $<TARGET_FILE:${TARGET_EXECUTABLE}> > ${TARGET_EXECUTABLE}.s
+)

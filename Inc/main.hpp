@@ -20,4 +20,9 @@
 
 #include "main.h"
 
+#define SM72445_VIN_GAIN  0.105691f
+#define SM72445_VOUT_GAIN 0.199029f
+#define SM72445_IIN_GAIN  1.0f // TODO: Find this value.
+#define SM72445_IOUT_GAIN 1.0f // TODO: Find this value.
+
 /*** END OF FILE ***/
