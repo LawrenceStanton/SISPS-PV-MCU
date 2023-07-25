@@ -16,7 +16,7 @@
  * The test is run recursively in an infinite loop.
  */
 
-#include "main.h"
+#include "main.hpp"
 
 #include <cmath>
 
