@@ -14,5 +14,8 @@ url = https://github.com/STMicroelectronics/STM32CubeG0
 path = Modules/etl
 url = https://github.com/ETLCPP/etl
 [submodule "Modules/SM72445"]
-	path = Modules/SM72445
-	url = https://github.com/LawrenceStanton/SM72445
+path = Modules/SM72445
+url = https://github.com/LawrenceStanton/SM72445
+[submodule "Altium/Private/SISPS-PV-PCB"]
+path = Altium/Private/SISPS-PV-PCB
+url = https://afs-vcs-eu1.365.altium.com/git/A88AC864-7F10-477D-A582-77F547FCAFC0.git
