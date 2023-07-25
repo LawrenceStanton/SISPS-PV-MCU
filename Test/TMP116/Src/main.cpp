@@ -84,8 +84,6 @@ int main(void) {
 		}
 
 		tmp116.setConfig(Config{});
-
-		HAL_Delay(500);
 	}
 }
 
