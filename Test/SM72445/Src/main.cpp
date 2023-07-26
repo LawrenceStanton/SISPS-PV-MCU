@@ -21,12 +21,22 @@
 #include "SM72445.hpp"
 #include "SM72445_I2C.hpp"
 
+#include <cmath>
+
+#define SM72445_CH0_EXPECTED_VOLTAGE 0.00f
+#define SM72445_CH2_EXPECTED_VOLTAGE 1.56f
+#define SM72445_CH4_EXPECTED_VOLTAGE 0.00f
+#define SM72445_CH6_EXPECTED_VOLTAGE 3.44f
+
 static void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_I2C2_Init(void);
 
-using Register		= SM72445::I2C::Register;
-using DeviceAddress = SM72445::I2C::DeviceAddress;
+static inline bool equalFloat(float a, float b, float epsilon);
+
+using Register		  = SM72445::I2C::Register;
+using DeviceAddress	  = SM72445::I2C::DeviceAddress;
+using AnalogueChannel = SM72445::AnalogueChannel;
 using std::optional;
 
 I2C_HandleTypeDef hi2c2;
@@ -43,6 +53,11 @@ static optional<float> vIn	= .0f;
 static optional<float> vOut = .0f;
 static optional<float> iIn	= .0f;
 static optional<float> iOut = .0f;
+
+static optional<float> ch0 = .0f;
+static optional<float> ch2 = .0f;
+static optional<float> ch4 = .0f;
+static optional<float> ch6 = .0f;
 
 int main(void) {
 	HAL_Init();
@@ -62,7 +77,18 @@ int main(void) {
 											 && iIn.has_value()	 //
 											 && iOut.has_value();
 
-		if (getElectricalMeasurementsSuccess) {
+		ch0 = sm72445.getAnalogueChannelVoltage(AnalogueChannel::CH0);
+		ch2 = sm72445.getAnalogueChannelVoltage(AnalogueChannel::CH2);
+		ch4 = sm72445.getAnalogueChannelVoltage(AnalogueChannel::CH4);
+		ch6 = sm72445.getAnalogueChannelVoltage(AnalogueChannel::CH6);
+
+		bool getAnalogueChannelVoltageSuccess =
+			ch0.has_value() && equalFloat(ch0.value(), SM72445_CH0_EXPECTED_VOLTAGE, 0.02) && //
+			ch2.has_value() && equalFloat(ch2.value(), SM72445_CH2_EXPECTED_VOLTAGE, 0.02) && //
+			ch4.has_value() && equalFloat(ch4.value(), SM72445_CH4_EXPECTED_VOLTAGE, 0.02) && //
+			ch6.has_value() && equalFloat(ch6.value(), SM72445_CH6_EXPECTED_VOLTAGE, 0.02);
+
+		if (getElectricalMeasurementsSuccess && getAnalogueChannelVoltageSuccess) {
 			HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
 			HAL_GPIO_TogglePin(LED2_GPIO_Port, LED2_Pin);
 			HAL_GPIO_TogglePin(LED3_GPIO_Port, LED3_Pin);
@@ -74,6 +100,10 @@ int main(void) {
 
 		HAL_Delay(500);
 	}
+}
+
+static inline bool equalFloat(float a, float b, float epsilon) {
+	return std::abs(a - b) < epsilon;
 }
 
 static void SystemClock_Config(void) {
