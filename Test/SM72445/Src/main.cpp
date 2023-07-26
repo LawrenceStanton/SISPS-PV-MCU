@@ -59,6 +59,11 @@ static optional<float> ch2 = .0f;
 static optional<float> ch4 = .0f;
 static optional<float> ch6 = .0f;
 
+static optional<float> vInOffset  = .0f;
+static optional<float> vOutOffset = .0f;
+static optional<float> iInOffset  = .0f;
+static optional<float> iOutOffset = .0f;
+
 int main(void) {
 	HAL_Init();
 	SystemClock_Config();
@@ -88,7 +93,17 @@ int main(void) {
 			ch4.has_value() && equalFloat(ch4.value(), SM72445_CH4_EXPECTED_VOLTAGE, 0.02) && //
 			ch6.has_value() && equalFloat(ch6.value(), SM72445_CH6_EXPECTED_VOLTAGE, 0.02);
 
-		if (getElectricalMeasurementsSuccess && getAnalogueChannelVoltageSuccess) {
+		vInOffset  = sm72445.getOffset(SM72445::ElectricalProperty::VOLTAGE_IN);
+		vOutOffset = sm72445.getOffset(SM72445::ElectricalProperty::VOLTAGE_OUT);
+		iInOffset  = sm72445.getOffset(SM72445::ElectricalProperty::CURRENT_IN);
+		iOutOffset = sm72445.getOffset(SM72445::ElectricalProperty::CURRENT_OUT);
+
+		bool getOffsetsSuccess = vInOffset.has_value() && vInOffset.value() == .0f	 //
+							  && vOutOffset.has_value() && vOutOffset.value() == .0f //
+							  && iInOffset.has_value() && iInOffset.value() == .0f	 //
+							  && iOutOffset.has_value() && iOutOffset.value() == .0f;
+
+		if (getElectricalMeasurementsSuccess && getAnalogueChannelVoltageSuccess && getOffsetsSuccess) {
 			HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
 			HAL_GPIO_TogglePin(LED2_GPIO_Port, LED2_Pin);
 			HAL_GPIO_TogglePin(LED3_GPIO_Port, LED3_Pin);
