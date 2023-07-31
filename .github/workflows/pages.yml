@@ -45,7 +45,7 @@ jobs:
                   submodules: true
             - name: Setup Pages
               uses: actions/configure-pages@v3
-            - run: cp README.md .github/Pages # Needed for relative include
+            - run: cp README.md .github/Pages && cp -r Assets .github/Pages # Needed for relative include
             - name: Build with Jekyll
               uses: actions/jekyll-build-pages@v1
               with:
