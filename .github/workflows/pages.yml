@@ -3,6 +3,27 @@ name: GitHub Pages
 on:
     push:
         branches: ['main']
+        paths-ignore:
+            - '.vscode/**'
+            - '.github/workflows/cmake.yml'
+            - 'CMake/**'
+            - 'CubeMX/**'
+            - 'Inc/**'
+            - 'Lib/**'
+            - 'Modules/**'
+            - 'Src/**'
+            - 'Test/**'
+            - '.clang-format'
+            - '.editorconfig'
+            - '.gitignore'
+            - '.gitmodules'
+            - '.prettierrc'
+            - 'CMakeLists.txt'
+            - 'CMakePresets.json'
+            - 'LICENCE.md'
+            - 'openocd.cfg'
+            - 'SISPS-PV-MCU.ioc'
+
     workflow_dispatch:
 
 permissions:
