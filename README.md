@@ -4,7 +4,7 @@ UCT SISPS Photovoltaic Board Firmware
 
 ![latest tag](https://img.shields.io/github/v/tag/lawrencestanton/SISPS-PV.svg?color=brightgreen)
 [![CMake](https://github.com/LawrenceStanton/SISPS-PV/actions/workflows/cmake.yml/badge.svg)](https://github.com/LawrenceStanton/SISPS-PV/actions/workflows/cmake.yml)
-[![Pages](https://github.com/LawrenceStanton/SISPS-PV/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/LawrenceStanton/SISPS-PV/actions/workflows/pages/pages-build-deployment)
+[![GitHub Pages](https://github.com/LawrenceStanton/SISPS-PV-MCU/actions/workflows/pages.yml/badge.svg)](https://github.com/LawrenceStanton/SISPS-PV-MCU/actions/workflows/pages.yml)
 
 ## Overview
 
