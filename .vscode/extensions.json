@@ -1,0 +1,26 @@
+{
+	"recommendations": [
+		"aaron-bond.better-comments",
+		"matepek.vscode-catch2-test-adapter",
+		"ms-vscode.cpptools-extension-pack",
+		"ms-vscode.cpptools",
+		"xaver.clang-format",
+		"twxs.cmake",
+		"ms-vscode.cmake-tools",
+		"streetsidesoftware.code-spell-checker",
+		"marus25.cortex-debug",
+		"editorconfig.editorconfig",
+		"ms-vscode.vscode-embedded-tools",
+		"usernamehw.errorlens",
+		"github.vscode-github-actions",
+		"trond-snekvik.gnu-mapfiles",
+		"zixuanwang.linkerscript",
+		"ms-vscode.makefile-tools",
+		"mcu-debug.memory-view",
+		"ibm.output-colorizer",
+		"esbenp.prettier-vscode",
+		"mcu-debug.peripheral-viewer",
+		"mcu-debug.rtos-views",
+		"ms-vscode.vscode-serial-monitor"
+	]
+}
