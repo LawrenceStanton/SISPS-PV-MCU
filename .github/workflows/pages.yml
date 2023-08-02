@@ -37,30 +37,37 @@ concurrency:
 
 jobs:
     build:
+        name: Build
         runs-on: ubuntu-latest
         steps:
             - name: Checkout
               uses: actions/checkout@v3
               with:
                   submodules: true
+
             - name: Setup Pages
               uses: actions/configure-pages@v3
+
             - run: cp README.md .github/Pages && cp -r Assets .github/Pages # Needed for relative include
+
             - name: Build with Jekyll
               uses: actions/jekyll-build-pages@v1
               with:
                   source: ./.github/Pages
                   destination: ./_site
-                  verbose: true
+                  verbose: false
+
             - name: Upload artifact
               uses: actions/upload-pages-artifact@v2
 
     deploy:
+        name: Deploy
         environment:
             name: github-pages
             url: ${{ steps.deployment.outputs.page_url }}
         runs-on: ubuntu-latest
         needs: build
+
         steps:
             - name: Deploy to GitHub Pages
               id: deployment

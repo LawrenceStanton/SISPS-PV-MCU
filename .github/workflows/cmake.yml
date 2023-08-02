@@ -25,6 +25,7 @@ on:
 
 jobs:
     build:
+        name: Build
         strategy:
             matrix:
                 os: [ubuntu-latest, macos-latest, windows-latest]
