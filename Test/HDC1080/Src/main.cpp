@@ -28,8 +28,8 @@ void MX_GPIO_Init(void);
 void MX_I2C1_Init(void);
 
 I2C_HandleTypeDef hi2c1;
-HDC1080_I2C		  hdc1080_i2c{&hi2c1};
-HDC1080			  hdc1080{&hdc1080_i2c};
+HDC1080_I2C		  hdc1080_i2c{hi2c1};
+HDC1080			  hdc1080{hdc1080_i2c};
 
 using Register = HDC1080::I2C::Register;
 
