@@ -13,15 +13,15 @@
 #include "stm32g0xx_hal.h"
 
 class HDC1080_I2C : public HDC1080::I2C {
-	I2C_HandleTypeDef *hi2c;
+	I2C_HandleTypeDef &hi2c;
 
 public:
-	virtual std::optional<Register> read(MemoryAddress address) final;
-	virtual std::optional<Register> write(MemoryAddress address, Register data) final;
-	virtual std::optional<uint8_t>	transmit(uint8_t data) final;
-	virtual std::optional<uint8_t>	receive() final;
+	virtual std::optional<Register> read(MemoryAddress address) override final;
+	virtual std::optional<Register> write(MemoryAddress address, Register data) override final;
+	virtual std::optional<uint8_t>	transmit(uint8_t data) override final;
+	virtual std::optional<uint8_t>	receive() override final;
 
-	virtual void delay(uint32_t ms) const final;
+	virtual void delay(uint32_t ms) const override final;
 
 	/**
 	 * @brief Construct a new I2C object
@@ -29,5 +29,7 @@ public:
 	 * @param hi2c The I2C handle to use for communication.
 	 * @note The I2C handle must be initialized before passing it to this constructor.
 	 */
-	HDC1080_I2C(I2C_HandleTypeDef *hi2c) : hi2c(hi2c) {}
+	HDC1080_I2C(I2C_HandleTypeDef &hi2c);
+
+	virtual ~HDC1080_I2C() = default;
 };
