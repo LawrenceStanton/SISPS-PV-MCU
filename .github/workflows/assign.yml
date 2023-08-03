@@ -2,6 +2,7 @@ name: 'Auto Assign'
 
 on:
     issues:
+        types: [opened]
 
 jobs:
     auto_assign:
