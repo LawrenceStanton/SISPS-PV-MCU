@@ -29,7 +29,7 @@ void MX_I2C1_Init(void);
 
 I2C_HandleTypeDef hi2c1;
 TMP116_I2C		  tmp116_i2c{&hi2c1};
-TMP116			  tmp116{&tmp116_i2c, TMP116::DeviceAddress::ADD0_GND};
+TMP116			  tmp116{tmp116_i2c, TMP116::DeviceAddress::ADD0_GND};
 
 using Register = TMP116::I2C::Register;
 using Config   = TMP116::Config;
