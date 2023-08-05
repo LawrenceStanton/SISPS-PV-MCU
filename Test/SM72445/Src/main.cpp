@@ -41,13 +41,13 @@ using std::optional;
 
 I2C_HandleTypeDef hi2c2;
 SM72445_I2C		  sm72445_i2c{&hi2c2};
-SM72445			  sm72445{
-	  &sm72445_i2c,
-	  DeviceAddress::ADDR010,
-	  SM72445_VIN_GAIN,
-	  SM72445_VOUT_GAIN,
-	  SM72445_IIN_GAIN,
-	  SM72445_IOUT_GAIN};
+SM72445_X		  sm72445{
+	sm72445_i2c,
+	DeviceAddress::ADDR010,
+	SM72445_VIN_GAIN,
+	SM72445_VOUT_GAIN,
+	SM72445_IIN_GAIN,
+	SM72445_IOUT_GAIN};
 
 static optional<float> vIn	= .0f;
 static optional<float> vOut = .0f;
