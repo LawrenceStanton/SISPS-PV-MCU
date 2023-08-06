@@ -16,6 +16,13 @@ set(CMAKE_CXX_EXTENSIONS ON)
 
 include(CMake/mcu.cmake)
 
+find_package(Git QUIET REQUIRED)
+
+execute_process(
+	COMMAND ${GIT_EXECUTABLE} submodule update --init --recursive
+	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
 if(CMAKE_CROSSCOMPILING)
 	# Cross Compilation Required Options
 	set(CROSSCOMPILE_CFLAGS
@@ -139,7 +146,7 @@ if(CMAKE_CROSSCOMPILING)
 	)
 
 	target_compile_options(STM32CubeG0_HAL PRIVATE
-		
+
 	)
 
 	add_library(SISPS::HAL ALIAS STM32CubeG0_HAL)
@@ -159,7 +166,7 @@ if(CMAKE_CROSSCOMPILING)
 	)
 
 	target_compile_options(STM32CubeG0_FREERTOS PRIVATE
-		
+
 	)
 
 	add_library(SISPS::FreeRTOS ALIAS STM32CubeG0_FREERTOS)
@@ -169,7 +176,7 @@ if(CMAKE_CROSSCOMPILING)
 
 	# TARGET EXECUTABLE
 
-	add_executable(${TARGET_EXECUTABLE} 
+	add_executable(${TARGET_EXECUTABLE}
 		${APPLICATION_SOURCES}
 		${STARTUP_SCRIPT}
 	)
