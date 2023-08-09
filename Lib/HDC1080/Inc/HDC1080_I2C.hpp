@@ -16,12 +16,12 @@ class HDC1080_I2C : public HDC1080::I2C {
 	I2C_HandleTypeDef &hi2c;
 
 public:
-	virtual std::optional<Register> read(MemoryAddress address) override final;
-	virtual std::optional<Register> write(MemoryAddress address, Register data) override final;
-	virtual std::optional<uint8_t>	transmit(uint8_t data) override final;
-	virtual std::optional<uint8_t>	receive() override final;
+	virtual std::optional<Register> read(MemoryAddress address) noexcept override final;
+	virtual std::optional<Register> write(MemoryAddress address, Register data) noexcept override final;
+	virtual std::optional<uint8_t>	transmit(uint8_t data) noexcept override final;
+	virtual std::optional<uint8_t>	receive() noexcept override final;
 
-	virtual void delay(uint32_t ms) const override final;
+	virtual void delay(Duration ms) const noexcept override final;
 
 	/**
 	 * @brief Construct a new I2C object

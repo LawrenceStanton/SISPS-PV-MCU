@@ -83,6 +83,10 @@ std::optional<uint8_t> HDC1080_I2C::receive() {
 	return data;
 }
 
-void HDC1080_I2C::delay(uint32_t ms) const {
-	HAL_Delay(ms);
+void HDC1080_I2C::delay(Duration ms) const noexcept {
+	static_assert(
+		std::is_same_v<Duration, std::chrono::milliseconds>,
+		"SISPS: HDC1080_I2C::delay() expected duration in milliseconds."
+	);
+	HAL_Delay(static_cast<uint32_t>(ms.count()));
 }

@@ -23,6 +23,8 @@
 #include "HDC1080.hpp"
 #include "HDC1080_I2C.hpp"
 
+using namespace units::literals;
+
 void SystemClock_Config(void);
 void MX_GPIO_Init(void);
 void MX_I2C1_Init(void);
@@ -33,8 +35,8 @@ HDC1080_X		  hdc1080{hdc1080_i2c};
 
 using Register = HDC1080::I2C::Register;
 
-static float				   temperature	  = -40.0;
-static float				   humidity		  = 0.0;
+static Celsius				   temperature	  = -40.0_degC;
+static RelativeHumidity		   humidity		  = 0.0;
 static std::optional<Register> deviceID		  = 0x0000u;
 static std::optional<Register> manufacturerID = 0x0000u;
 static std::optional<uint64_t> serialID		  = 0x0ul;
@@ -57,7 +59,7 @@ int main(void) {
 		manufacturerID = hdc1080.getManufacturerID();
 		serialID	   = hdc1080.getSerialID();
 
-		bool getRegistersSuccessDefaultConfig = temperature != -40.0										 //
+		bool getRegistersSuccessDefaultConfig = temperature != -40.0_degC									 //
 											 && humidity != 0.0												 //
 											 && deviceID.has_value() && deviceID.value() == deviceIDExpected //
 											 && manufacturerID.has_value()
@@ -78,13 +80,14 @@ int main(void) {
 							 && setConfigHumidityResolutionSuccess	  //
 							 && setConfigHeaterEnabledSuccess;
 
-		float temperatureConfigured = hdc1080.getTemperature();
-		float humidityConfigured	= hdc1080.getHumidity();
+		Celsius			 temperatureConfigured = hdc1080.getTemperature();
+		RelativeHumidity humidityConfigured	   = hdc1080.getHumidity();
 
-		const float temperatureMarginCelsius = 0.8f;
-		const float humidityMarginPercent	 = 1.0f;
-		bool getRegistersSuccessConfigured = std::abs(temperatureConfigured - temperature) < temperatureMarginCelsius //
-										  && std::abs(humidityConfigured - humidity) < humidityMarginPercent;
+		const Celsius		   temperatureMarginCelsius = 0.8_degC;
+		const RelativeHumidity humidityMarginPercent	= 1.0_pct;
+		bool				   getRegistersSuccessConfigured =
+			std::abs((temperatureConfigured - temperature).value()) < temperatureMarginCelsius.value()
+			&& std::abs((humidityConfigured - humidity).value()) < humidityMarginPercent.value();
 
 		if (getRegistersSuccessDefaultConfig && setConfigSuccess && getRegistersSuccessConfigured) {
 			HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
