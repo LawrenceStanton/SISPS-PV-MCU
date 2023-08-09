@@ -22,6 +22,8 @@ on:
             - 'CubeMX/Makefile'
     pull_request:
         branches: ['main']
+    schedule:
+        - cron: '0 13 * * 1' # Build deps from Live
 
 jobs:
     build:
