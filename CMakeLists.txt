@@ -18,11 +18,6 @@ include(CMake/mcu.cmake)
 
 find_package(Git QUIET REQUIRED)
 
-execute_process(
-	COMMAND ${GIT_EXECUTABLE} submodule update --init --recursive
-	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-)
-
 if(CMAKE_CROSSCOMPILING)
 	# Cross Compilation Required Options
 	set(CROSSCOMPILE_CFLAGS
