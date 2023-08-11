@@ -2,10 +2,6 @@ project(SISPS-PV-MCU-HDC1080-Test)
 
 set(TEST_EXECUTABLE ${PROJECT_NAME})
 
-include(${CMAKE_SOURCE_DIR}/CMake/mcu.cmake)
-include(${CMAKE_SOURCE_DIR}/CMake/scripts.cmake)
-include(${CMAKE_SOURCE_DIR}/CMake/stm32CubeG0.cmake)
-
 file(GLOB APPLICATION_SOURCES
 	${CMAKE_CURRENT_SOURCE_DIR}/Src/*.c
 	${CMAKE_CURRENT_SOURCE_DIR}/Src/*.cpp
@@ -26,32 +22,28 @@ target_link_libraries(${TEST_EXECUTABLE} PRIVATE
 )
 
 target_link_options(${TEST_EXECUTABLE} PRIVATE
-	${CPU_PARAMETERS}
-	--specs=nano.specs
-	-T${LINKER_SCRIPT}
-	LINKER:--start-group
-	-lc
-	-lm
-	-lnosys
-	LINKER:--end-group
 	LINKER:-Map=${TEST_EXECUTABLE}.map,--cref
 )
 
-set_target_properties(${TEST_EXECUTABLE} PROPERTIES
-	EXCLUDE_FROM_ALL FALSE
-)
+option(HDC1080_EXCLUDE_FROM_ALL "Exclude ${TEST_EXECUTABLE} from \"build all\"" OFF)
+if(HDC1080_EXCLUDE_FROM_ALL)
+	set_target_properties(${TEST_EXECUTABLE} PROPERTIES
+		EXCLUDE_FROM_ALL TRUE
+	)
+endif()
 
 add_custom_command(TARGET ${TEST_EXECUTABLE} POST_BUILD
+	COMMENT "Printing ${TEST_EXECUTABLE} Size..."
 	COMMAND ${CMAKE_SIZE} $<TARGET_FILE:${TARGET_EXECUTABLE}>
 )
 
 add_custom_command(TARGET ${TEST_EXECUTABLE} POST_BUILD
-	COMMENT "Generating ${TEST_EXECUTABLE}.hex and ${TEST_EXECUTABLE}.bin"
+	COMMENT "Generating ${TEST_EXECUTABLE}.hex and ${TEST_EXECUTABLE}.bin..."
 	COMMAND ${CMAKE_OBJCOPY} -O ihex $<TARGET_FILE:${TEST_EXECUTABLE}> ${TEST_EXECUTABLE}.hex
 	COMMAND ${CMAKE_OBJCOPY} -O binary $<TARGET_FILE:${TEST_EXECUTABLE}> ${TEST_EXECUTABLE}.bin
 )
 
 add_custom_command(TARGET ${TEST_EXECUTABLE} POST_BUILD
-	COMMENT "Generating ${TEST_EXECUTABLE} Disassembly"
+	COMMENT "Generating ${TEST_EXECUTABLE} Disassembly..."
 	COMMAND ${CMAKE_OBJDUMP} -D -C $<TARGET_FILE:${TARGET_EXECUTABLE}> > ${TARGET_EXECUTABLE}.s
 )

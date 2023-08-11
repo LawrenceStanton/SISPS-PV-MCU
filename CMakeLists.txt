@@ -3,7 +3,6 @@ cmake_minimum_required(VERSION 3.24)
 project(SISPS-PV-MCU)
 
 set(TARGET_EXECUTABLE ${CMAKE_PROJECT_NAME})
-set(LOCAL_TEST_EXECUTABLE ${CMAKE_PROJECT_NAME}-LocalTest)
 
 enable_language(C CXX ASM)
 
@@ -14,39 +13,42 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS ON)
 
-include(CMake/mcu.cmake)
-
 find_package(Git QUIET REQUIRED)
 
 if(CMAKE_CROSSCOMPILING)
+	# Global Configuration for Cross Compilation
+
+	include(CMake/scripts.cmake)
+	include(CMake/mcu.cmake)
+
 	# Cross Compilation Required Options
-	set(CROSSCOMPILE_CFLAGS
+	set(CROSSCOMPILE_C_OPTIONS
 		-fdata-sections
 		-ffunction-sections
 	)
-	set(CROSSCOMPILE_CXXFLAGS
+	set(CROSSCOMPILE_CXX_OPTIONS
 		-fno-rtti
 		-fno-exceptions
 		-fno-threadsafe-statics
 	)
 
-	set(CROSSCOMPILE_OPTIMISATION_FLAGS_DEBUG
+	set(CROSSCOMPILE_OPTIMISATION_OPTIONS_DEBUG
 		-Og
-		-gdwarf-2
-		-ggdb
+		-ggdb3
 	)
 
-	set(CROSSCOMPILE_OPTIMISATION_FLAGS_RELEASE
+	set(CROSSCOMPILE_OPTIMISATION_OPTIONS_RELWITHDEBINFO
 		-O3
-		-g0
+		-ggdb
+		-feliminate-unused-debug-types
 	)
 
 	add_compile_options(
-		${CPU_PARAMETERS}
-		${CROSSCOMPILE_CFLAGS}
-		"$<$<COMPILE_LANGUAGE:CXX>:${CROSSCOMPILE_CXXFLAGS}>"
-		"$<$<CONFIG:Debug>:${CROSSCOMPILE_OPTIMISATION_FLAGS_DEBUG}>"
-		"$<$<CONFIG:Release>:${CROSSCOMPILE_OPTIMISATION_FLAGS_RELEASE}>"
+		${CPU_COMPILE_OPTIONS}
+		${CROSSCOMPILE_C_OPTIONS}
+		"$<$<COMPILE_LANGUAGE:CXX>:${CROSSCOMPILE_CXX_OPTIONS}>"
+		"$<$<CONFIG:Debug>:${CROSSCOMPILE_OPTIMISATION_OPTIONS_DEBUG}>"
+		"$<$<CONFIG:RelWithDebInfo>:${CROSSCOMPILE_OPTIMISATION_OPTIONS_RELWITHDEBINFO}>"
 	)
 
 	add_compile_definitions(
@@ -54,130 +56,46 @@ if(CMAKE_CROSSCOMPILING)
 	)
 
 	add_link_options(
+		${CPU_PARAMETERS}
+		--specs=nano.specs
+		-T${LINKER_SCRIPT}
+
+		LINKER:--start-group
+		-lc
+		-lm
+		-lnosys
+		LINKER:--end-group
+
 		LINKER:--gc-section
 		LINKER:--print-memory-usage
+		LINKER:--no-warn-rwx-segment # Workaround — Something isn't right in ST's startup code.
 	)
-
-endif()
-
-set(APPLICATION_INCLUDE_DIRECTORIES
-	${CMAKE_CURRENT_SOURCE_DIR}/Inc
-	${CMAKE_CURRENT_SOURCE_DIR}/Lib/Inc
-)
-
-set(STM32CUBEG0_HAL_INCLUDE_DIRECTORIES
-	${CMAKE_CURRENT_SOURCE_DIR}/Modules/STM32CubeG0/Drivers/STM32G0xx_HAL_Driver/Inc
-	${CMAKE_CURRENT_SOURCE_DIR}/Modules/STM32CubeG0/Drivers/STM32G0xx_HAL_Driver/Inc/Legacy
-	${CMAKE_CURRENT_SOURCE_DIR}/Modules/STM32CubeG0/Drivers/CMSIS/Device/ST/STM32G0xx/Include
-	${CMAKE_CURRENT_SOURCE_DIR}/Modules/STM32CubeG0/Drivers/CMSIS/Include
-	${CMAKE_CURRENT_SOURCE_DIR}/Inc/HAL
-)
-set(STM32CUBEG0_FREERTOS_INCLUDE_DIRECTORIES
-	${CMAKE_CURRENT_SOURCE_DIR}/Modules/STM32CubeG0/Middlewares/Third_Party/FreeRTOS/Source/include
-	${CMAKE_CURRENT_SOURCE_DIR}/Modules/STM32CubeG0/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS
-	${CMAKE_CURRENT_SOURCE_DIR}/Modules/STM32CubeG0/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM0
-	${CMAKE_CURRENT_SOURCE_DIR}/Modules/STM32CubeG0/Drivers/CMSIS/Core/Include
-)
-
-file(GLOB_RECURSE APPLICATION_SOURCES
-	${CMAKE_CURRENT_SOURCE_DIR}/Src/*.c
-	${CMAKE_CURRENT_SOURCE_DIR}/Src/*.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/Src/app_freertos.c
-)
-
-list(FILTER APPLICATION_SOURCES EXCLUDE REGEX "main.c$")	# main.cpp is used instead of main.c
-
-file(GLOB STM32CUBEG0_HAL_SOURCES
-	${CMAKE_CURRENT_SOURCE_DIR}/Modules/STM32CubeG0/Drivers/STM32G0xx_HAL_Driver/Src/*_hal*.c
-)
-
-file(GLOB_RECURSE TEST_SOURCES
-	${CMAKE_CURRENT_SOURCE_DIR}/*.test.cpp
-)
-
-# Workaround - Broken template files should not be compiled.
-list(FILTER STM32CUBEG0_HAL_SOURCES EXCLUDE REGEX ".*_template.c")
-
-file(GLOB STM32CUBEG0_FREERTOS_SOURCES
-	${CMAKE_CURRENT_SOURCE_DIR}/Modules/STM32CubeG0/Middlewares/Third_Party/FreeRTOS/Source/*.c
-	${CMAKE_CURRENT_SOURCE_DIR}/Modules/STM32CubeG0/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.c
-	${CMAKE_CURRENT_SOURCE_DIR}/Modules/STM32CubeG0/Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c
-	${CMAKE_CURRENT_SOURCE_DIR}/Modules/STM32CubeG0/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM0/port.c
-)
-
-include(CMake/scripts.cmake)
-
-if(NOT CMAKE_CROSSCOMPILING)
-	# Google Test
-	include(FetchContent)
-	FetchContent_Declare(
-		googletest
-		GIT_REPOSITORY https://github.com/google/googletest
-		GIT_TAG origin/main
-	)
-	set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-	FetchContent_MakeAvailable(googletest)
-
-	enable_testing()
 endif()
 
 add_subdirectory(Modules)
 
 if(CMAKE_CROSSCOMPILING)
+	# Configuration of Embedded Target Application
+
+	set(APPLICATION_INCLUDE_DIRECTORIES
+		${CMAKE_CURRENT_SOURCE_DIR}/Inc
+	)
+
+	file(GLOB_RECURSE APPLICATION_SOURCES
+		${CMAKE_CURRENT_SOURCE_DIR}/Src/*.c
+		${CMAKE_CURRENT_SOURCE_DIR}/Src/*.cpp
+		${CMAKE_CURRENT_SOURCE_DIR}/Src/app_freertos.c
+	)
+
+	list(FILTER APPLICATION_SOURCES EXCLUDE REGEX "main.c$")	# main.cpp is used instead of main.c
 
 	include(CMake/stm32CubeG0.cmake)
 
-	# HAL Library
-	add_library(STM32CubeG0_HAL STATIC
-		${STM32CUBEG0_HAL_SOURCES}
-	)
-
-	target_compile_definitions(STM32CubeG0_HAL PUBLIC
-		${HAL_COMPILE_DEFINITIONS}
-	)
-
-	target_include_directories(STM32CubeG0_HAL SYSTEM
-		PUBLIC ${STM32CUBEG0_HAL_INCLUDE_DIRECTORIES}
-	)
-
-	target_compile_options(STM32CubeG0_HAL PRIVATE
-
-	)
-
-	add_library(SISPS::HAL ALIAS STM32CubeG0_HAL)
-
-	# FreeRTOS Library
-	add_library(STM32CubeG0_FREERTOS STATIC
-		${STM32CUBEG0_FREERTOS_SOURCES}
-	)
-
-	target_compile_definitions(STM32CubeG0_FREERTOS PUBLIC
-		${HAL_COMPILE_DEFINITIONS}
-	)
-
-	target_include_directories(STM32CubeG0_FREERTOS SYSTEM
-		PUBLIC ${STM32CUBEG0_FREERTOS_INCLUDE_DIRECTORIES}
-		PRIVATE ${APPLICATION_INCLUDE_DIRECTORIES}
-	)
-
-	target_compile_options(STM32CubeG0_FREERTOS PRIVATE
-
-	)
-
-	add_library(SISPS::FreeRTOS ALIAS STM32CubeG0_FREERTOS)
-
-	# Local Library
 	add_subdirectory(Lib)
-
-	# TARGET EXECUTABLE
 
 	add_executable(${TARGET_EXECUTABLE}
 		${APPLICATION_SOURCES}
 		${STARTUP_SCRIPT}
-	)
-
-	target_compile_definitions(${TARGET_EXECUTABLE} PRIVATE
-		${HAL_COMPILE_DEFINITIONS}
 	)
 
 	target_include_directories(${TARGET_EXECUTABLE} PRIVATE
@@ -192,37 +110,29 @@ if(CMAKE_CROSSCOMPILING)
 
 	target_link_libraries(
 		${TARGET_EXECUTABLE} PRIVATE
-		STM32CubeG0_HAL
-		STM32CubeG0_FREERTOS
+		SISPS::HAL
+		SISPS::FreeRTOS
 		SISPS::Lib
 		etl::etl
 	)
 
 	target_link_options(${TARGET_EXECUTABLE} PRIVATE
-		${CPU_PARAMETERS}
-		--specs=nano.specs
-		-T${LINKER_SCRIPT}
-		LINKER:--start-group
-		-lc
-		-lm
-		-lnosys
-		LINKER:--end-group
 		LINKER:-Map=${TARGET_EXECUTABLE}.map,--cref
 	)
 
-
 	add_custom_command(TARGET ${TARGET_EXECUTABLE} POST_BUILD
+		COMMENT "Printing ${TARGET_EXECUTABLE} Size..."
 		COMMAND ${CMAKE_SIZE} $<TARGET_FILE:${TARGET_EXECUTABLE}>
 	)
 
 	add_custom_command(TARGET ${TARGET_EXECUTABLE} POST_BUILD
-		COMMENT "Generating ${TARGET_EXECUTABLE}.hex and ${TARGET_EXECUTABLE}.bin"
+		COMMENT "Generating ${TARGET_EXECUTABLE}.hex and ${TARGET_EXECUTABLE}.bin..."
 		COMMAND ${CMAKE_OBJCOPY} -O ihex $<TARGET_FILE:${TARGET_EXECUTABLE}> ${TARGET_EXECUTABLE}.hex
 		COMMAND ${CMAKE_OBJCOPY} -O binary $<TARGET_FILE:${TARGET_EXECUTABLE}> ${TARGET_EXECUTABLE}.bin
 	)
 
 	add_custom_command(TARGET ${TARGET_EXECUTABLE} POST_BUILD
-		COMMENT "Generating ${TARGET_EXECUTABLE} Disassembly"
+		COMMENT "Generating ${TARGET_EXECUTABLE} Disassembly..."
 		COMMAND ${CMAKE_OBJDUMP} -D -C $<TARGET_FILE:${TARGET_EXECUTABLE}> > ${TARGET_EXECUTABLE}.s
 	)
 

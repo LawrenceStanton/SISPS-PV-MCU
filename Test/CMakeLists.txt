@@ -1,3 +1,10 @@
+option(SISPS_EXCLUDE_INTEGRATION_TESTS_FROM_ALL "Exclude tests from \"build all\"" OFF)
+if(SISPS_EXCLUDE_INTEGRATION_TESTS_FROM_ALL)
+	set(HDC1080_EXCLUDE_FROM_ALL ON CACHE BOOL "Disable building HDC1080 tests in all")
+	set(TMP116_EXCLUDE_FROM_ALL ON CACHE BOOL "Disable building TMP116 tests in all")
+	set(SM72445_EXCLUDE_FROM_ALL ON CACHE BOOL "Disable building SM72445 tests in all")
+endif()
+
 add_subdirectory(HDC1080)
 add_subdirectory(TMP116)
 add_subdirectory(SM72445)
