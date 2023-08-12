@@ -32,6 +32,7 @@ jobs:
             matrix:
                 os: [ubuntu-latest, macos-latest, windows-latest]
                 preset: [Debug, Release, Server]
+                gcc: ['latest', '12.2.Rel1', '11.3.Rel1']
 
                 exclude:
                     - os: windows-latest
@@ -50,6 +51,8 @@ jobs:
             - name: Install ARM Embedded Toolchain
               if: matrix.preset != 'Server'
               uses: carlosperate/arm-none-eabi-gcc-action@v1
+              with:
+                  release: ${{ matrix.gcc }}
 
             - run: arm-none-eabi-gcc --version
               if: ${{success() && matrix.preset != 'Server'}}
