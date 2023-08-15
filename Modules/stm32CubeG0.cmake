@@ -1,4 +1,4 @@
-# Configures the STM32CubeG0 HAL and FreeRTOS libraries from the perspective of ${CMAKE_SOURCE_DIR}.
+# Configures the STM32CubeG0 HAL and FreeRTOS libraries.
 # It is expected the https://github.com/STMicroelectronics/STM32CubeG0 is cloned to ${CMAKE_SOURCE_DIR}/Modules/STM32CubeG0.
 
 # Generates static libraries:
@@ -17,6 +17,7 @@ set(STM32CUBEG0_FREERTOS_INCLUDE_DIRECTORIES
 	${CMAKE_SOURCE_DIR}/Modules/STM32CubeG0/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS
 	${CMAKE_SOURCE_DIR}/Modules/STM32CubeG0/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM0
 	${CMAKE_SOURCE_DIR}/Modules/STM32CubeG0/Drivers/CMSIS/Core/Include
+	${CMAKE_SOURCE_DIR}/Inc/FreeRTOS
 )
 
 file(GLOB STM32CUBEG0_HAL_SOURCES
@@ -36,7 +37,7 @@ list(FILTER STM32CUBEG0_HAL_SOURCES EXCLUDE REGEX ".*_template.c")
 
 # HAL Library
 add_library(STM32CubeG0_HAL STATIC
-${STM32CUBEG0_HAL_SOURCES}
+	${STM32CUBEG0_HAL_SOURCES}
 )
 
 set(STM32CUBEG0_HAL_COMPILE_DEFINITIONS

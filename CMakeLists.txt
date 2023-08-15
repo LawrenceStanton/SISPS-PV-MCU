@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.24)
+cmake_minimum_required(VERSION 3.24...3.27)
 
 project(SISPS-PV-MCU)
 
@@ -12,8 +12,6 @@ set(CMAKE_C_EXTENSIONS ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS ON)
-
-find_package(Git QUIET REQUIRED)
 
 if(CMAKE_CROSSCOMPILING)
 	# Global Configuration for Cross Compilation
@@ -29,7 +27,6 @@ if(CMAKE_CROSSCOMPILING)
 	set(CROSSCOMPILE_CXX_OPTIONS
 		-fno-rtti
 		-fno-exceptions
-		-fno-threadsafe-statics
 	)
 
 	set(CROSSCOMPILE_OPTIMISATION_OPTIONS_DEBUG
@@ -56,7 +53,7 @@ if(CMAKE_CROSSCOMPILING)
 	)
 
 	add_link_options(
-		${CPU_PARAMETERS}
+		${CPU_COMPILE_OPTIONS}
 		--specs=nano.specs
 		-T${LINKER_SCRIPT}
 
@@ -72,26 +69,26 @@ if(CMAKE_CROSSCOMPILING)
 	)
 endif()
 
+if(NOT CMAKE_CROSSCOMPILING)
+	enable_testing()
+endif()
+
 add_subdirectory(Modules)
 
 if(CMAKE_CROSSCOMPILING)
-	# Configuration of Embedded Target Application
+	add_subdirectory(Lib)
 
 	set(APPLICATION_INCLUDE_DIRECTORIES
-		${CMAKE_CURRENT_SOURCE_DIR}/Inc
+		${CMAKE_SOURCE_DIR}/Inc
 	)
 
 	file(GLOB_RECURSE APPLICATION_SOURCES
-		${CMAKE_CURRENT_SOURCE_DIR}/Src/*.c
-		${CMAKE_CURRENT_SOURCE_DIR}/Src/*.cpp
-		${CMAKE_CURRENT_SOURCE_DIR}/Src/app_freertos.c
+		${CMAKE_SOURCE_DIR}/Src/*.c
+		${CMAKE_SOURCE_DIR}/Src/*.cpp
+		${CMAKE_SOURCE_DIR}/Src/app_freertos.c
 	)
 
 	list(FILTER APPLICATION_SOURCES EXCLUDE REGEX "main.c$")	# main.cpp is used instead of main.c
-
-	include(CMake/stm32CubeG0.cmake)
-
-	add_subdirectory(Lib)
 
 	add_executable(${TARGET_EXECUTABLE}
 		${APPLICATION_SOURCES}

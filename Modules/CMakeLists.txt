@@ -11,3 +11,7 @@ endif()
 add_subdirectory(HDC1080) # HDC1080::HDC1080
 add_subdirectory(TMP116) # TMP116::TMP116
 add_subdirectory(SM72445) # SM72445::SM72445
+
+if(CMAKE_CROSSCOMPILING)
+	include(stm32CubeG0.cmake)
+endif()
