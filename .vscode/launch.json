@@ -39,7 +39,6 @@
 			"type": "cortex-debug",
 			"servertype": "openocd",
 			"configFiles": ["openocd.cfg"],
-			"searchDir": [],
 			"runToEntryPoint": "main",
 			"showDevDebugOutput": "none",
 			"armToolchainPath": "",
