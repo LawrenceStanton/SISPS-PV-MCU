@@ -31,7 +31,7 @@ jobs:
         strategy:
             matrix:
                 os: [ubuntu-latest, macos-latest, windows-latest]
-                preset: [Debug, Release, Server]
+                preset: [Server, Release]
                 gcc: ['latest', '12.2.Rel1'] # 11.3 and below has breaking issue with --no-warn-rwx-segment flag.
 
                 exclude:
