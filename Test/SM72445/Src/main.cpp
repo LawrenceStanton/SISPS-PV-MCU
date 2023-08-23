@@ -18,8 +18,8 @@
 
 #include "main.hpp"
 
-#include "SM72445.hpp"
 #include "SM72445_I2C.hpp"
+#include "SM72445_X.hpp"
 
 #include <cmath>
 
@@ -88,10 +88,14 @@ int main(void) {
 		ch6 = sm72445.getAnalogueChannelVoltage(AnalogueChannel::CH6);
 
 		bool getAnalogueChannelVoltageSuccess =
-			ch0.has_value() && equalFloat(ch0.value(), SM72445_CH0_EXPECTED_VOLTAGE, 0.02) && //
-			ch2.has_value() && equalFloat(ch2.value(), SM72445_CH2_EXPECTED_VOLTAGE, 0.02) && //
-			ch4.has_value() && equalFloat(ch4.value(), SM72445_CH4_EXPECTED_VOLTAGE, 0.02) && //
-			ch6.has_value() && equalFloat(ch6.value(), SM72445_CH6_EXPECTED_VOLTAGE, 0.02);
+			ch0.has_value() && equalFloat(ch0.value(), SM72445_CH0_EXPECTED_VOLTAGE, 0.02)
+			&& //
+			ch2.has_value() && equalFloat(ch2.value(), SM72445_CH2_EXPECTED_VOLTAGE, 0.02)
+			&& //
+			ch4.has_value() && equalFloat(ch4.value(), SM72445_CH4_EXPECTED_VOLTAGE, 0.02)
+			&& //
+			ch6.has_value()
+			&& equalFloat(ch6.value(), SM72445_CH6_EXPECTED_VOLTAGE, 0.02);
 
 		vInOffset  = sm72445.getOffset(SM72445::ElectricalProperty::VOLTAGE_IN);
 		vOutOffset = sm72445.getOffset(SM72445::ElectricalProperty::VOLTAGE_OUT);
@@ -103,7 +107,8 @@ int main(void) {
 							  && iInOffset.has_value() && iInOffset.value() == .0f	 //
 							  && iOutOffset.has_value() && iOutOffset.value() == .0f;
 
-		if (getElectricalMeasurementsSuccess && getAnalogueChannelVoltageSuccess && getOffsetsSuccess) {
+		if (getElectricalMeasurementsSuccess && getAnalogueChannelVoltageSuccess
+			&& getOffsetsSuccess) {
 			HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
 			HAL_GPIO_TogglePin(LED2_GPIO_Port, LED2_Pin);
 			HAL_GPIO_TogglePin(LED3_GPIO_Port, LED3_Pin);
@@ -141,12 +146,15 @@ static void SystemClock_Config(void) {
 
 	/** Initializes the CPU, AHB and APB buses clocks
 	 */
-	RCC_ClkInitStruct.ClockType		 = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_PCLK1;
+	RCC_ClkInitStruct.ClockType =
+		RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_PCLK1;
 	RCC_ClkInitStruct.SYSCLKSource	 = RCC_SYSCLKSOURCE_HSI;
 	RCC_ClkInitStruct.AHBCLKDivider	 = RCC_SYSCLK_DIV1;
 	RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
 
-	if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0) != HAL_OK) { Error_Handler(); }
+	if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0) != HAL_OK) {
+		Error_Handler();
+	}
 }
 
 static void MX_I2C2_Init(void) {
@@ -163,7 +171,9 @@ static void MX_I2C2_Init(void) {
 
 	/** Configure Analogue filter
 	 */
-	if (HAL_I2CEx_ConfigAnalogFilter(&hi2c2, I2C_ANALOGFILTER_ENABLE) != HAL_OK) { Error_Handler(); }
+	if (HAL_I2CEx_ConfigAnalogFilter(&hi2c2, I2C_ANALOGFILTER_ENABLE) != HAL_OK) {
+		Error_Handler();
+	}
 
 	/** Configure Digital filter
 	 */
