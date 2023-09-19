@@ -9,7 +9,11 @@
  * checking the results. Where possible, certain values are also checked
  * for typically valid results.
  *
- * A PASS is indicated by the LEDs toggling every 1s.
+ * TEST CONDITIONS:
+ * - Vin > 15V
+ * - No load
+ *
+ * A PASS is indicated by the LEDs toggling every 2s.
  * A FAIL is indicated by the LEDs being on solid ON-OFF-ON.
  * An single FAIL will permanently result in a toggling ON-OFF-ON pattern.
  *
@@ -47,7 +51,8 @@ SM72445_X		  sm72445{
 	SM72445_VIN_GAIN,
 	SM72445_VOUT_GAIN,
 	SM72445_IIN_GAIN,
-	SM72445_IOUT_GAIN};
+	SM72445_IOUT_GAIN,
+};
 
 static optional<float> vIn	= .0f;
 static optional<float> vOut = .0f;
@@ -72,6 +77,7 @@ int main(void) {
 	MX_I2C2_Init();
 
 	while (true) {
+		// Test Telemetry
 		vIn	 = sm72445.getInputVoltage();
 		vOut = sm72445.getOutputVoltage();
 		iIn	 = sm72445.getInputCurrent();
@@ -88,35 +94,52 @@ int main(void) {
 		ch6 = sm72445.getAnalogueChannelVoltage(AnalogueChannel::CH6);
 
 		bool getAnalogueChannelVoltageSuccess =
-			ch0.has_value() && equalFloat(ch0.value(), SM72445_CH0_EXPECTED_VOLTAGE, 0.02)
-			&& //
-			ch2.has_value() && equalFloat(ch2.value(), SM72445_CH2_EXPECTED_VOLTAGE, 0.02)
-			&& //
-			ch4.has_value() && equalFloat(ch4.value(), SM72445_CH4_EXPECTED_VOLTAGE, 0.02)
-			&& //
-			ch6.has_value()
-			&& equalFloat(ch6.value(), SM72445_CH6_EXPECTED_VOLTAGE, 0.02);
+			ch0.has_value() && equalFloat(*ch0, SM72445_CH0_EXPECTED_VOLTAGE, 0.02)
+			&& ch2.has_value() && equalFloat(*ch2, SM72445_CH2_EXPECTED_VOLTAGE, 0.02)
+			&& ch4.has_value() && equalFloat(*ch4, SM72445_CH4_EXPECTED_VOLTAGE, 0.02)
+			&& ch6.has_value() && equalFloat(*ch6, SM72445_CH6_EXPECTED_VOLTAGE, 0.02);
 
 		vInOffset  = sm72445.getOffset(SM72445::ElectricalProperty::VOLTAGE_IN);
 		vOutOffset = sm72445.getOffset(SM72445::ElectricalProperty::VOLTAGE_OUT);
 		iInOffset  = sm72445.getOffset(SM72445::ElectricalProperty::CURRENT_IN);
 		iOutOffset = sm72445.getOffset(SM72445::ElectricalProperty::CURRENT_OUT);
 
-		bool getOffsetsSuccess = vInOffset.has_value() && vInOffset.value() == .0f	 //
-							  && vOutOffset.has_value() && vOutOffset.value() == .0f //
-							  && iInOffset.has_value() && iInOffset.value() == .0f	 //
-							  && iOutOffset.has_value() && iOutOffset.value() == .0f;
+		bool getOffsetsSuccess =
+			vInOffset.has_value() && *vInOffset == .0f		 // Reset value
+			&& vOutOffset.has_value() && *vOutOffset == .0f	 // Reset value
+			&& iInOffset.has_value() && *iInOffset == .0f	 // Reset value
+			&& iOutOffset.has_value() && *iOutOffset == .0f; // Reset value
 
-		if (getElectricalMeasurementsSuccess && getAnalogueChannelVoltageSuccess
-			&& getOffsetsSuccess) {
+		// Test configuration
+		auto config			  = sm72445.getConfig();
+		bool getConfigSuccess = config.has_value();
+
+		auto builder = sm72445.getConfigBuilder();
+		builder.setMaxOutputCurrentOverride(3.0f);	// Not measured, simply sufficient.
+		builder.setMaxOutputVoltageOverride(10.0f); // Near maximum
+		auto newConfig = sm72445.setConfig(builder.build());
+
+		HAL_Delay(500); // Allow to ramp up.
+		auto vOutSet = sm72445.getOutputVoltage();
+
+		bool setConfigSuccess = newConfig.has_value() //
+							 && vOutSet.has_value()	  //
+							 && equalFloat(*vOutSet, 14.0f, 0.1f);
+
+		if (getElectricalMeasurementsSuccess	//
+			&& getAnalogueChannelVoltageSuccess //
+			&& getOffsetsSuccess				//
+			&& setConfigSuccess) {
 			HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
 			HAL_GPIO_TogglePin(LED2_GPIO_Port, LED2_Pin);
 			HAL_GPIO_TogglePin(LED3_GPIO_Port, LED3_Pin);
 		} else {
 			HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_SET);
-			HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_RESET);
-			HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_SET);
+			HAL_GPIO_WritePin(LED2_GPIO_Port, LED2_Pin, GPIO_PIN_RESET);
+			HAL_GPIO_WritePin(LED3_GPIO_Port, LED3_Pin, GPIO_PIN_SET);
 		}
+
+		sm72445.setConfig(sm72445.getConfigBuilder().build());
 
 		HAL_Delay(500);
 	}
