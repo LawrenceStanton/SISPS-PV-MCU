@@ -1,1 +1,76 @@
-./Modules/SISPS-Commons/CMake/CMakePresets.json
+{
+	"version": 6,
+	"cmakeMinimumRequired": {
+		"major": 3,
+		"minor": 25
+	},
+	"configurePresets": [
+		{
+			"name": "Server",
+			"displayName": "Build Server",
+			"description": "Minimal build configuration for Build Server.",
+			"generator": "Ninja",
+			"cacheVariables": {
+				"CMAKE_BUILD_TYPE": "RelWithDebInfo"
+			},
+			"binaryDir": "Build/Server"
+		},
+		{
+			"name": "arm-none-eabi",
+			"displayName": "ARM GCC Cross Compilation",
+			"description": "Cross Compilation for Embedded ARM Processors",
+			"generator": "Ninja",
+			"hidden": true,
+			"cacheVariables": {
+				"CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+			},
+			"warnings": {},
+			"toolchainFile": "Modules/SISPS-Commons/CMake/arm-none-eabi.cmake"
+		},
+
+		{
+			"name": "Release",
+			"inherits": ["arm-none-eabi"],
+			"displayName": "Release",
+			"description": "Release Build to Target Embedded Device",
+			"cacheVariables": {
+				"CMAKE_BUILD_TYPE": "RelWithDebInfo"
+			},
+			"binaryDir": "Build/App/Release"
+		}
+	],
+	"buildPresets": [
+		{
+			"name": "Server",
+			"displayName": "Server",
+			"description": "Configuration for building tests on minimal build server.",
+			"configurePreset": "Server",
+			"targets": ["all"],
+			"cleanFirst": true,
+			"verbose": true
+		},
+		{
+			"name": "Release",
+			"displayName": "Release",
+			"description": "Build to Target Embedded Device with Release",
+			"targets": ["all"],
+			"configurePreset": "Release",
+			"cleanFirst": true,
+			"verbose": true
+		}
+	],
+	"testPresets": [
+		{
+			"name": "Server",
+			"displayName": "Server Side Tests",
+			"description": "Remote Testing on Build Server",
+			"configurePreset": "Server",
+			"output": {
+				"outputOnFailure": true
+			},
+			"execution": {
+				"stopOnFailure": true
+			}
+		}
+	]
+}
