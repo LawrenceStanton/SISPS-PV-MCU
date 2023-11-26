@@ -77,20 +77,20 @@
 #include "stm32g0xx.h"
 
 #if !defined(HSE_VALUE)
-#define HSE_VALUE (8000000UL) /*!< Value of the External oscillator in Hz */
-#endif						  /* HSE_VALUE */
+	#define HSE_VALUE (8000000UL) /*!< Value of the External oscillator in Hz */
+#endif							  /* HSE_VALUE */
 
 #if !defined(HSI_VALUE)
-#define HSI_VALUE (16000000UL) /*!< Value of the Internal oscillator in Hz*/
-#endif						   /* HSI_VALUE */
+	#define HSI_VALUE (16000000UL) /*!< Value of the Internal oscillator in Hz*/
+#endif							   /* HSI_VALUE */
 
 #if !defined(LSI_VALUE)
-#define LSI_VALUE (32000UL) /*!< Value of LSI in Hz*/
-#endif						/* LSI_VALUE */
+	#define LSI_VALUE (32000UL) /*!< Value of LSI in Hz*/
+#endif							/* LSI_VALUE */
 
 #if !defined(LSE_VALUE)
-#define LSE_VALUE (32768UL) /*!< Value of LSE in Hz*/
-#endif						/* LSE_VALUE */
+	#define LSE_VALUE (32768UL) /*!< Value of LSE in Hz*/
+#endif							/* LSE_VALUE */
 
 /**
  * @}
@@ -117,25 +117,25 @@
 /* #define USER_VECT_TAB_ADDRESS */
 
 #if defined(USER_VECT_TAB_ADDRESS)
-/*!< Uncomment the following line if you need to relocate your vector Table
-	 in Sram else user remap will be done in Flash. */
-/* #define VECT_TAB_SRAM */
-#if defined(VECT_TAB_SRAM)
-#define VECT_TAB_BASE_ADDRESS                                                                                          \
-	SRAM_BASE /*!< Vector Table base address field.                                                                    \
-				   This value must be a multiple of 0x200. */
-#define VECT_TAB_OFFSET                                                                                                \
-	0x00000000U /*!< Vector Table base offset field.                                                                   \
-					 This value must be a multiple of 0x200. */
-#else
-#define VECT_TAB_BASE_ADDRESS                                                                                          \
-	FLASH_BASE /*!< Vector Table base address field.                                                                   \
-					This value must be a multiple of 0x200. */
-#define VECT_TAB_OFFSET                                                                                                \
-	0x00000000U /*!< Vector Table base offset field.                                                                   \
-					 This value must be a multiple of 0x200. */
-#endif			/* VECT_TAB_SRAM */
-#endif			/* USER_VECT_TAB_ADDRESS */
+	/*!< Uncomment the following line if you need to relocate your vector Table
+		 in Sram else user remap will be done in Flash. */
+	/* #define VECT_TAB_SRAM */
+	#if defined(VECT_TAB_SRAM)
+		#define VECT_TAB_BASE_ADDRESS                                                    \
+			SRAM_BASE /*!< Vector Table base address field.                              \
+						   This value must be a multiple of 0x200. */
+		#define VECT_TAB_OFFSET                                                          \
+			0x00000000U /*!< Vector Table base offset field.                             \
+							 This value must be a multiple of 0x200. */
+	#else
+		#define VECT_TAB_BASE_ADDRESS                                                    \
+			FLASH_BASE /*!< Vector Table base address field.                             \
+							This value must be a multiple of 0x200. */
+		#define VECT_TAB_OFFSET                                                          \
+			0x00000000U /*!< Vector Table base offset field.                             \
+							 This value must be a multiple of 0x200. */
+	#endif				/* VECT_TAB_SRAM */
+#endif					/* USER_VECT_TAB_ADDRESS */
 /******************************************************************************/
 /**
  * @}
@@ -162,8 +162,9 @@
 */
 uint32_t SystemCoreClock = 16000000UL;
 
-const uint32_t AHBPrescTable[16UL] = {0UL, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL, 1UL, 2UL, 3UL, 4UL, 6UL, 7UL, 8UL, 9UL};
-const uint32_t APBPrescTable[8UL]  = {0UL, 0UL, 0UL, 0UL, 1UL, 2UL, 3UL, 4UL};
+const uint32_t AHBPrescTable[16UL] =
+	{0UL, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL, 0UL, 1UL, 2UL, 3UL, 4UL, 6UL, 7UL, 8UL, 9UL};
+const uint32_t APBPrescTable[8UL] = {0UL, 0UL, 0UL, 0UL, 1UL, 2UL, 3UL, 4UL};
 
 /**
  * @}
@@ -207,7 +208,8 @@ void SystemInit(void) {
  *           frequency in the chip. It is calculated based on the predefined
  *           constant and the selected clock source:
  *
- *           - If SYSCLK source is HSI, SystemCoreClock will contain the HSI_VALUE(**) / HSI division factor
+ *           - If SYSCLK source is HSI, SystemCoreClock will contain the HSI_VALUE(**) /
+ * HSI division factor
  *
  *           - If SYSCLK source is HSE, SystemCoreClock will contain the HSE_VALUE(***)
  *
@@ -218,14 +220,13 @@ void SystemInit(void) {
  *           - If SYSCLK source is PLL, SystemCoreClock will contain the HSE_VALUE(***)
  *             or HSI_VALUE(*) multiplied/divided by the PLL factors.
  *
- *         (**) HSI_VALUE is a constant defined in stm32g0xx_hal_conf.h file (default value
- *              16 MHz) but the real value may vary depending on the variations
- *              in voltage and temperature.
+ *         (**) HSI_VALUE is a constant defined in stm32g0xx_hal_conf.h file (default
+ * value 16 MHz) but the real value may vary depending on the variations in voltage and
+ * temperature.
  *
- *         (***) HSE_VALUE is a constant defined in stm32g0xx_hal_conf.h file (default value
- *              8 MHz), user has to ensure that HSE_VALUE is same as the real
- *              frequency of the crystal used. Otherwise, this function may
- *              have wrong result.
+ *         (***) HSE_VALUE is a constant defined in stm32g0xx_hal_conf.h file (default
+ * value 8 MHz), user has to ensure that HSE_VALUE is same as the real frequency of the
+ * crystal used. Otherwise, this function may have wrong result.
  *
  *         - The result of this function could be not correct when using fractional
  *           value for HSE crystal.
@@ -277,7 +278,7 @@ void SystemCoreClockUpdate(void) {
 
 	case 0x00000000U: /* HSI used as system clock */
 	default:		  /* HSI used as system clock */
-		hsidiv			= (1UL << ((READ_BIT(RCC->CR, RCC_CR_HSIDIV)) >> RCC_CR_HSIDIV_Pos));
+		hsidiv = (1UL << ((READ_BIT(RCC->CR, RCC_CR_HSIDIV)) >> RCC_CR_HSIDIV_Pos));
 		SystemCoreClock = (HSI_VALUE / hsidiv);
 		break;
 	}
