@@ -46,7 +46,7 @@ jobs:
             - name: Checkout
               uses: actions/checkout@v3
               with:
-                  submodules: true
+                  submodules: recursive
 
             - name: Install ARM Embedded Toolchain
               if: matrix.preset != 'Server'
